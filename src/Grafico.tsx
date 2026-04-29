@@ -1011,10 +1011,10 @@ export default function Grafico() {
           <div style={{
             flex: 1,
             overflowY: "auto",
-            padding: 24,
+            padding: "12px 16px",
             display: "flex",
             flexDirection: "column",
-            gap: 24
+            gap: 12
           }}>
             {/* User Message */}
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
