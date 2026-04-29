@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx react-scripts *)",
+      "mcp__figma__get_design_context",
+      "mcp__figma__get_screenshot",
+      "Bash(timeout 5 npm start)",
+      "Bash(npm run *)",
+      "Bash(npm start *)",
+      "Bash(pkill -f \"node.*react-scripts\")",
+      "PowerShell(Get-Process node -ErrorAction SilentlyContinue)",
+      "PowerShell(Stop-Process -Force -ErrorAction SilentlyContinue)",
+      "Bash(curl -s http://localhost:3000)",
+      "Bash(start http://localhost:3000)",
+      "Bash(git checkout *)",
+      "Bash(lsof -ti:3000)",
+      "Bash(xargs kill *)",
+      "PowerShell(Get-Process -Name node -ErrorAction SilentlyContinue)",
+      "PowerShell(Stop-Process -Force)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git remote *)",
+      "Bash(git branch *)",
+      "Bash(git push *)",
+      "Bash(git commit *)"
+    ]
+  }
+}
