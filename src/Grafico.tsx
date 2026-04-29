@@ -966,10 +966,10 @@ export default function Grafico() {
       {showProfitAIChat && (
         <div className="profit-ai-chat-enter" style={{
           position: "fixed",
-          top: 1,
-          right: 1,
-          bottom: 1,
-          width: 320,
+          top: 0,
+          right: 0,
+          bottom: 0,
+          width: 360,
           background: "#101010",
           borderLeft: "1px solid #505050",
           display: "flex",
