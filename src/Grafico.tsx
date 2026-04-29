@@ -1029,7 +1029,7 @@ export default function Grafico() {
                   <div style={{ width: 24, height: 24, background: "#dbb5e5", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 700, color: "#2d2d2d", flexShrink: 0, fontFamily: "'Segoe UI', sans-serif" }}>DA</div>
                   <span style={{ fontFamily: "'Segoe UI', sans-serif", fontWeight: 600, fontSize: 13, color: "#b6cfe5" }}>Daniel Antunes</span>
                 </div>
-                <p style={{ fontFamily: "'Tahoma', sans-serif", fontSize: 12, color: "#e6e6e6", margin: 0, lineHeight: 1.5 }}>
+                <p style={{ fontFamily: "'Tahoma', sans-serif", fontSize: 14, color: "#e6e6e6", margin: 0, lineHeight: 1.5 }}>
                   faça uma análise do gráfico e me de sugestões e tendencias para criar uma estratégia de trading e saber se esse ativo vale a pena
                 </p>
               </div>
@@ -1041,10 +1041,10 @@ export default function Grafico() {
                 <img src={icProfitAIChat} alt="Profit AI" width={18} height={18} />
                 <span style={{ fontFamily: "'Segoe UI', sans-serif", fontWeight: 600, fontSize: 13, color: "#8197ab" }}>Profit AI</span>
               </div>
-              <div style={{ fontFamily: "'Tahoma', sans-serif", fontSize: 12, color: "#c2c2c2", lineHeight: 1.5 }}>
-                <p style={{ margin: "0 0 6px 0" }}>O gráfico mostra uma transição clara de um movimento de alta para uma forte reversão vendedora.</p>
-                <p style={{ margin: "0 0 6px 0" }}><strong>Padrão de Reversão:</strong> Após uma subida íngreme, o preço formou um topo e começou a apresentar candles de dúvida.</p>
-                <p style={{ margin: "0 0 6px 0" }}><strong>Tendência Imediata:</strong> De Baixa. O preço está "esticado" para baixo, buscando novas mínimas.</p>
+              <div style={{ fontFamily: "'Tahoma', sans-serif", fontSize: 14, color: "#c2c2c2", lineHeight: 1.5 }}>
+                <p style={{ margin: "0 0 8px 0" }}>O gráfico mostra uma transição clara de um movimento de alta para uma forte reversão vendedora.</p>
+                <p style={{ margin: "0 0 8px 0" }}><strong>Padrão de Reversão:</strong> Após uma subida íngreme, o preço formou um topo e começou a apresentar candles de dúvida.</p>
+                <p style={{ margin: "0 0 8px 0" }}><strong>Tendência Imediata:</strong> De Baixa. O preço está "esticado" para baixo, buscando novas mínimas.</p>
               </div>
               <div style={{ display: "flex", gap: 12, paddingTop: 10 }}>
                 <img src={icLike} alt="like" width={18} height={18} style={{ cursor: "pointer" }} />
