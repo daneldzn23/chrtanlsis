@@ -991,8 +991,8 @@ export default function Grafico() {
             padding: "0 4px"
           }}>
             <div style={{ display: "flex", gap: 3, alignItems: "center" }}>
-              <img src={icProfitAI} alt="Profit AI" width={18} height={18} />
-              <span style={{ fontFamily: "'Segoe UI', sans-serif", fontWeight: 600, fontSize: 15, color: "#fff" }}>Profit AI</span>
+              <img src={icProfitAI} alt="Profit AI" width={14} height={14} />
+              <span style={{ fontFamily: "'Segoe UI', sans-serif", fontWeight: 600, fontSize: 13, color: "#fff" }}>Profit AI</span>
             </div>
             <div style={{ flex: 1 }} />
             <button style={{ background: "none", border: "none", cursor: "pointer", display: "flex", gap: 4, alignItems: "center", height: 22, padding: "0 3px", borderRadius: 4, flexShrink: 0 }}>
