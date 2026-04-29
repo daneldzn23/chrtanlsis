@@ -249,7 +249,7 @@ export default function Grafico() {
         border: "1px solid #505050",
         display: "flex",
         flexDirection: "column",
-        width: 980,
+        width: "min(980px, 100vw - 32px)",
         height: "calc(100vh - 32px)",
         overflow: "hidden",
         borderRadius: 4,
