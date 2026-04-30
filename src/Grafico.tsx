@@ -192,17 +192,12 @@ export default function Grafico() {
   const [renderTick, setRenderTick] = React.useState(0);
   const [timeLabel, setTimeLabel] = React.useState<string>("1m");
   const [secondsUntilUpdate, setSecondsUntilUpdate] = React.useState(60);
-  const [profitAIActive, setProfitAIActive] = React.useState(false);
-  const [selection, setSelection] = React.useState<{ x1: number; y1: number; x2: number; y2: number } | null>(null);
-  const [finalisedSelection, setFinalisedSelection] = React.useState<{ x1: number; y1: number; x2: number; y2: number } | null>(null);
-  const [profitAIQuery, setProfitAIQuery] = React.useState("");
   const [showProfitAITooltip, setShowProfitAITooltip] = React.useState(false);
   const [showTradingTooltip, setShowTradingTooltip] = React.useState(false);
   const [tooltipPos, setTooltipPos] = React.useState({ top: 0, left: 0 });
   const [showProfitAIChat, setShowProfitAIChat] = React.useState(false);
   const [isPanning, setIsPanning] = React.useState(false);
   const allCandlesRef = React.useRef<Candle[]>(generateInitialCandles());
-  const ignoreNextSelectionRef = React.useRef(false);
   const chartRef = React.useRef<HTMLDivElement>(null);
   const profitAIBtnRef = React.useRef<HTMLDivElement>(null);
   const panStartRef = React.useRef(0);
@@ -238,24 +233,6 @@ export default function Grafico() {
     return () => clearInterval(timer);
   }, []);
 
-  React.useEffect(() => {
-    if (!profitAIActive || !finalisedSelection) return;
-
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const isInsideOverlay = target.closest('[data-profit-ai-overlay]');
-
-      if (!isInsideOverlay) {
-        ignoreNextSelectionRef.current = true;
-        setFinalisedSelection(null);
-        setProfitAIQuery("");
-        setProfitAIActive(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [profitAIActive, finalisedSelection]);
 
   return (
     <div
@@ -455,13 +432,8 @@ export default function Grafico() {
         <div style={{ background: "#505050", height: 16, flexShrink: 0, width: 1 }} />
 
         <div ref={profitAIBtnRef}>
-          <BtnSelect active={profitAIActive} onClick={() => {
-            const newActive = !profitAIActive;
-            setProfitAIActive(newActive);
-            setFinalisedSelection(null);
-            setSelection(null);
-            setProfitAIQuery("");
-            ignoreNextSelectionRef.current = false;
+          <BtnSelect onClick={() => {
+            setShowProfitAIChat(true);
           }} onMouseEnter={() => {
             if (profitAIBtnRef.current) {
               const rect = profitAIBtnRef.current.getBoundingClientRect();
@@ -524,71 +496,33 @@ export default function Grafico() {
               position: "relative",
               minWidth: 0,
               display: "flex",
-              cursor: profitAIActive ? "crosshair" : (isPanning ? "grabbing" : "grab")
+              cursor: isPanning ? "grabbing" : "grab"
             }}
             onMouseDown={(e) => {
-              if (profitAIActive && !ignoreNextSelectionRef.current) {
-                // Profit AI selection mode
-                ignoreNextSelectionRef.current = false;
-                const rect = e.currentTarget.getBoundingClientRect();
-                const startX = e.clientX - rect.left;
-                const startY = e.clientY - rect.top;
+              // Pan mode - always enabled
+              setIsPanning(true);
+              panStartRef.current = e.clientX;
+              const rect = e.currentTarget.getBoundingClientRect();
+              const candlePixelWidth = rect.width / visibleCandles.length;
 
-                const handleMouseMove = (moveE: MouseEvent) => {
-                  const currentX = moveE.clientX - rect.left;
-                  const currentY = moveE.clientY - rect.top;
-                  setSelection({
-                    x1: Math.min(startX, currentX),
-                    y1: Math.min(startY, currentY),
-                    x2: Math.max(startX, currentX),
-                    y2: Math.max(startY, currentY),
-                  });
-                };
+              const handleMouseMove = (moveE: MouseEvent) => {
+                const delta = moveE.clientX - panStartRef.current;
+                const candleDelta = Math.round(delta / candlePixelWidth);
+                setViewOffset((prev) => {
+                  const newOffset = prev - candleDelta;
+                  return Math.max(0, Math.min(newOffset, allCandlesRef.current.length - zoomLevel));
+                });
+                panStartRef.current = moveE.clientX;
+              };
 
-                const handleMouseUp = (upE: MouseEvent) => {
-                  const endX = upE.clientX - rect.left;
-                  const endY = upE.clientY - rect.top;
-                  const finalSel = {
-                    x1: Math.min(startX, endX),
-                    y1: Math.min(startY, endY),
-                    x2: Math.max(startX, endX),
-                    y2: Math.max(startY, endY),
-                  };
-                  setSelection(null);
-                  setFinalisedSelection(finalSel);
-                  document.removeEventListener("mousemove", handleMouseMove);
-                  document.removeEventListener("mouseup", handleMouseUp);
-                };
+              const handleMouseUp = () => {
+                setIsPanning(false);
+                document.removeEventListener("mousemove", handleMouseMove);
+                document.removeEventListener("mouseup", handleMouseUp);
+              };
 
-                document.addEventListener("mousemove", handleMouseMove);
-                document.addEventListener("mouseup", handleMouseUp);
-              } else if (!profitAIActive) {
-                // Pan mode
-                ignoreNextSelectionRef.current = false;
-                setIsPanning(true);
-                panStartRef.current = e.clientX;
-                const rect = e.currentTarget.getBoundingClientRect();
-                const candlePixelWidth = rect.width / visibleCandles.length;
-
-                const handleMouseMove = (moveE: MouseEvent) => {
-                  const delta = moveE.clientX - panStartRef.current;
-                  const candleDelta = Math.round(delta / candlePixelWidth);
-                  setViewOffset((prev) => {
-                    const newOffset = prev - candleDelta;
-                    return Math.max(0, Math.min(newOffset, allCandlesRef.current.length - zoomLevel));
-                  });
-                  panStartRef.current = moveE.clientX;
-                };
-
-                const handleMouseUp = () => {
-                  setIsPanning(false);
-                  document.removeEventListener("mousemove", handleMouseMove);
-                  document.removeEventListener("mouseup", handleMouseUp);
-                };
-
-                document.addEventListener("mousemove", handleMouseMove);
-                document.addEventListener("mouseup", handleMouseUp);
-              }
+              document.addEventListener("mousemove", handleMouseMove);
+              document.addEventListener("mouseup", handleMouseUp);
             }}
             onWheel={(e) => {
               if (e.deltaY > 0) {
@@ -597,11 +531,6 @@ export default function Grafico() {
                 setZoomLevel((prev) => Math.max(10, prev - 5));
               }
               e.preventDefault();
-            }}
-            onMouseLeave={() => {
-              if (selection === null) {
-                setProfitAIQuery("");
-              }
             }}
           >
             {/* SVG Chart */}
@@ -685,118 +614,6 @@ export default function Grafico() {
               })()}
             </div>
 
-            {/* Selection overlay - shows during dragging */}
-            {profitAIActive && selection && (
-              <div
-                style={{
-                  position: "absolute",
-                  left: selection.x1,
-                  top: selection.y1,
-                  width: selection.x2 - selection.x1,
-                  height: selection.y2 - selection.y1,
-                  border: "2px solid #52ea94",
-                  background: "rgba(82, 234, 148, 0.1)",
-                  pointerEvents: "none",
-                  zIndex: 10,
-                }}
-              />
-            )}
-
-            {/* Finalised selection box - shows after drag is complete */}
-            {profitAIActive && finalisedSelection && (
-              <div
-                data-profit-ai-overlay
-                style={{
-                  position: "absolute",
-                  left: finalisedSelection.x1,
-                  top: finalisedSelection.y1,
-                  width: finalisedSelection.x2 - finalisedSelection.x1,
-                  height: finalisedSelection.y2 - finalisedSelection.y1,
-                  border: "2px solid #52ea94",
-                  background: "rgba(82, 234, 148, 0.1)",
-                  pointerEvents: "none",
-                  zIndex: 10,
-                }}
-              />
-            )}
-
-            {/* Profit AI Input - floating underneath selection box */}
-            {profitAIActive && finalisedSelection && (
-              <div
-                data-profit-ai-overlay
-                onMouseDown={(e) => e.stopPropagation()}
-                style={{
-                  position: "absolute",
-                  left: finalisedSelection.x1,
-                  top: finalisedSelection.y2 + 12,
-                  width: 320,
-                  zIndex: 20,
-                  pointerEvents: "auto",
-                }}
-              >
-                <div style={{
-                  display: "flex",
-                  gap: 8,
-                  alignItems: "center",
-                  background: "linear-gradient(90deg, #1a2328 0%, #1c252a 100%)",
-                  border: "1px solid #40474b",
-                  borderRadius: 8,
-                  padding: "6px 6px 6px 8px",
-                  height: 36
-                }}>
-                  <div style={{ display: "flex", flex: 1, height: "100%", alignItems: "center", minWidth: 0 }}>
-                    <input
-                      type="text"
-                      value={profitAIQuery}
-                      onChange={(e) => setProfitAIQuery(e.target.value)}
-                      onKeyPress={(e) => {
-                        if (e.key === "Enter" && profitAIQuery.trim()) {
-                          console.log("Profit AI Query:", profitAIQuery);
-                          setShowProfitAIChat(true);
-                          setProfitAIQuery("");
-                        }
-                      }}
-                      placeholder="Pergunte ao Profit AI"
-                      style={{
-                        flex: 1,
-                        background: "none",
-                        border: "none",
-                        color: "#c2c2c2",
-                        fontSize: 12,
-                        fontFamily: "'Tahoma', sans-serif",
-                        outline: "none",
-                        padding: "4px 0",
-                        minWidth: 0
-                      }}
-                    />
-                  </div>
-                  <button
-                    onClick={() => {
-                      if (profitAIQuery.trim()) {
-                        console.log("Profit AI Query:", profitAIQuery);
-                        setShowProfitAIChat(true);
-                        setProfitAIQuery("");
-                      }
-                    }}
-                    style={{
-                      width: 28,
-                      height: 28,
-                      padding: 0,
-                      background: "#4d4d4f",
-                      border: "none",
-                      borderRadius: 4,
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexShrink: 0,
-                    }}
-                  >
-                    <img src={icSendDark} alt="send" width={14} height={14} style={{ display: "block" }} />
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Time axis labels below chart */}
