@@ -187,7 +187,9 @@ const fontSegoe: React.CSSProperties = { fontFamily: "'Segoe UI', sans-serif" };
 export default function Grafico() {
   const [showTradingPanel, setShowTradingPanel] = React.useState(true);
   const [showToolbar, setShowToolbar] = React.useState(true);
-  const [candles, setCandles] = React.useState<Candle[]>(() => generateInitialCandles());
+  const [zoomLevel, setZoomLevel] = React.useState(40);
+  const [viewOffset, setViewOffset] = React.useState(0);
+  const [renderTick, setRenderTick] = React.useState(0);
   const [timeLabel, setTimeLabel] = React.useState<string>("1m");
   const [secondsUntilUpdate, setSecondsUntilUpdate] = React.useState(60);
   const [profitAIActive, setProfitAIActive] = React.useState(false);
@@ -198,18 +200,30 @@ export default function Grafico() {
   const [showTradingTooltip, setShowTradingTooltip] = React.useState(false);
   const [tooltipPos, setTooltipPos] = React.useState({ top: 0, left: 0 });
   const [showProfitAIChat, setShowProfitAIChat] = React.useState(false);
+  const [isPanning, setIsPanning] = React.useState(false);
+  const allCandlesRef = React.useRef<Candle[]>(generateInitialCandles());
   const ignoreNextSelectionRef = React.useRef(false);
   const chartRef = React.useRef<HTMLDivElement>(null);
   const profitAIBtnRef = React.useRef<HTMLDivElement>(null);
+  const panStartRef = React.useRef(0);
+
+  const visibleCandles = React.useMemo(() => {
+    const all = allCandlesRef.current;
+    const end = all.length - viewOffset;
+    const start = Math.max(0, end - zoomLevel);
+    return all.slice(start, end);
+  }, [zoomLevel, viewOffset, renderTick]);
 
   React.useEffect(() => {
     const interval = setInterval(() => {
-      setCandles((prev) => {
-        const lastPrice = prev[prev.length - 1].close;
-        const newCandle = generateNewCandle(lastPrice);
-        const updated = [...prev.slice(1), newCandle];
-        return updated;
-      });
+      const lastPrice = allCandlesRef.current[allCandlesRef.current.length - 1].close;
+      const newCandle = generateNewCandle(lastPrice);
+      allCandlesRef.current.push(newCandle);
+      if (allCandlesRef.current.length > 500) {
+        allCandlesRef.current.shift();
+        setViewOffset((prev) => Math.max(0, prev - 1));
+      }
+      setRenderTick((prev) => prev + 1);
       setSecondsUntilUpdate(60);
     }, 60000);
 
@@ -510,45 +524,79 @@ export default function Grafico() {
               position: "relative",
               minWidth: 0,
               display: "flex",
-              cursor: profitAIActive ? "crosshair" : "default"
+              cursor: profitAIActive ? "crosshair" : (isPanning ? "grabbing" : "grab")
             }}
             onMouseDown={(e) => {
-              if (!profitAIActive || ignoreNextSelectionRef.current) {
+              if (profitAIActive && !ignoreNextSelectionRef.current) {
+                // Profit AI selection mode
                 ignoreNextSelectionRef.current = false;
-                return;
-              }
-              const rect = e.currentTarget.getBoundingClientRect();
-              const startX = e.clientX - rect.left;
-              const startY = e.clientY - rect.top;
+                const rect = e.currentTarget.getBoundingClientRect();
+                const startX = e.clientX - rect.left;
+                const startY = e.clientY - rect.top;
 
-              const handleMouseMove = (moveE: MouseEvent) => {
-                const currentX = moveE.clientX - rect.left;
-                const currentY = moveE.clientY - rect.top;
-                setSelection({
-                  x1: Math.min(startX, currentX),
-                  y1: Math.min(startY, currentY),
-                  x2: Math.max(startX, currentX),
-                  y2: Math.max(startY, currentY),
-                });
-              };
-
-              const handleMouseUp = (upE: MouseEvent) => {
-                const endX = upE.clientX - rect.left;
-                const endY = upE.clientY - rect.top;
-                const finalSel = {
-                  x1: Math.min(startX, endX),
-                  y1: Math.min(startY, endY),
-                  x2: Math.max(startX, endX),
-                  y2: Math.max(startY, endY),
+                const handleMouseMove = (moveE: MouseEvent) => {
+                  const currentX = moveE.clientX - rect.left;
+                  const currentY = moveE.clientY - rect.top;
+                  setSelection({
+                    x1: Math.min(startX, currentX),
+                    y1: Math.min(startY, currentY),
+                    x2: Math.max(startX, currentX),
+                    y2: Math.max(startY, currentY),
+                  });
                 };
-                setSelection(null);
-                setFinalisedSelection(finalSel);
-                document.removeEventListener("mousemove", handleMouseMove);
-                document.removeEventListener("mouseup", handleMouseUp);
-              };
 
-              document.addEventListener("mousemove", handleMouseMove);
-              document.addEventListener("mouseup", handleMouseUp);
+                const handleMouseUp = (upE: MouseEvent) => {
+                  const endX = upE.clientX - rect.left;
+                  const endY = upE.clientY - rect.top;
+                  const finalSel = {
+                    x1: Math.min(startX, endX),
+                    y1: Math.min(startY, endY),
+                    x2: Math.max(startX, endX),
+                    y2: Math.max(startY, endY),
+                  };
+                  setSelection(null);
+                  setFinalisedSelection(finalSel);
+                  document.removeEventListener("mousemove", handleMouseMove);
+                  document.removeEventListener("mouseup", handleMouseUp);
+                };
+
+                document.addEventListener("mousemove", handleMouseMove);
+                document.addEventListener("mouseup", handleMouseUp);
+              } else if (!profitAIActive) {
+                // Pan mode
+                ignoreNextSelectionRef.current = false;
+                setIsPanning(true);
+                panStartRef.current = e.clientX;
+                const rect = e.currentTarget.getBoundingClientRect();
+                const candlePixelWidth = rect.width / visibleCandles.length;
+
+                const handleMouseMove = (moveE: MouseEvent) => {
+                  const delta = moveE.clientX - panStartRef.current;
+                  const candleDelta = Math.round(delta / candlePixelWidth);
+                  setViewOffset((prev) => {
+                    const newOffset = prev - candleDelta;
+                    return Math.max(0, Math.min(newOffset, allCandlesRef.current.length - zoomLevel));
+                  });
+                  panStartRef.current = moveE.clientX;
+                };
+
+                const handleMouseUp = () => {
+                  setIsPanning(false);
+                  document.removeEventListener("mousemove", handleMouseMove);
+                  document.removeEventListener("mouseup", handleMouseUp);
+                };
+
+                document.addEventListener("mousemove", handleMouseMove);
+                document.addEventListener("mouseup", handleMouseUp);
+              }
+            }}
+            onWheel={(e) => {
+              if (e.deltaY > 0) {
+                setZoomLevel((prev) => Math.min(120, prev + 5));
+              } else {
+                setZoomLevel((prev) => Math.max(10, prev - 5));
+              }
+              e.preventDefault();
             }}
             onMouseLeave={() => {
               if (selection === null) {
@@ -559,7 +607,7 @@ export default function Grafico() {
             {/* SVG Chart */}
             <svg style={{ flex: 1, background: "#042042", minWidth: 0 }} viewBox="0 0 800 300" preserveAspectRatio="none">
               {(() => {
-                const prices = candles.map(c => [c.high, c.low]).flat();
+                const prices = visibleCandles.map(c => [c.high, c.low]).flat();
                 const maxPrice = Math.max(...prices);
                 const minPrice = Math.min(...prices);
                 const range = maxPrice - minPrice || 1;
@@ -567,8 +615,8 @@ export default function Grafico() {
                 const topPrice = maxPrice + padding;
                 const bottomPrice = minPrice - padding;
 
-                const candleWidth = 800 / candles.length * 0.7;
-                const gap = 800 / candles.length * 0.3;
+                const candleWidth = 800 / visibleCandles.length * 0.7;
+                const gap = 800 / visibleCandles.length * 0.3;
 
                 const yScale = (price: number) => {
                   return 300 * (1 - (price - bottomPrice) / (topPrice - bottomPrice));
@@ -591,7 +639,7 @@ export default function Grafico() {
                     })}
 
                     {/* Candles */}
-                    {candles.map((c, i) => {
+                    {visibleCandles.map((c, i) => {
                       const x = i * (candleWidth + gap);
                       const bodyColor = c.close >= c.open ? "#049648" : "#e82233";
                       const high_y = yScale(c.high);
@@ -618,7 +666,7 @@ export default function Grafico() {
             {/* Price grid labels on the right */}
             <div style={{ width: 63, display: "flex", flexDirection: "column", justifyContent: "space-between", paddingRight: 4, paddingTop: 8, paddingBottom: 8, position: "relative" }}>
               {(() => {
-                const prices = candles.map(c => [c.high, c.low]).flat();
+                const prices = visibleCandles.map(c => [c.high, c.low]).flat();
                 const maxPrice = Math.max(...prices);
                 const minPrice = Math.min(...prices);
                 const range = maxPrice - minPrice || 1;
