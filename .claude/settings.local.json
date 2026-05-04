@@ -24,7 +24,9 @@
       "Bash(git push *)",
       "Bash(git commit *)",
       "Bash(npm install *)",
-      "Bash(git fetch *)"
+      "Bash(git fetch *)",
+      "PowerShell(Get-Content \"$env:APPDATA\\\\Claude\\\\config.json\" -ErrorAction SilentlyContinue | ConvertFrom-Json | ConvertTo-Json -Depth 10)",
+      "Bash(git pull *)"
     ]
   }
 }

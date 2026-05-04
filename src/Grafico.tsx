@@ -1,6 +1,7 @@
 // Figma design: Editor de Estratégias 2.0 — node 406:45061
 
 import React from 'react';
+import AIWavyLoader from './components/AIWavyLoader';
 import icStatusMercadoDisponivel from './ic-status_mercado-disponível.svg';
 import icChartTrading from './ic-chart_trading.svg';
 import icConfiguracaoComJanela from './ic-configuração_com_janela.svg';
@@ -952,11 +953,11 @@ export default function Grafico() {
                 <span style={{ fontFamily: "'Segoe UI', sans-serif", fontWeight: 600, fontSize: 13, color: "#8197ab" }}>Profit AI</span>
               </div>
               {isProfitAILoading ? (
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", paddingTop: 8, paddingBottom: 8, width: "100%" }}>
-                  <div style={{ fontFamily: "'Tahoma', sans-serif", fontSize: 12, color: "#95afc7" }}>
-                    Desenvolvendo a Resposta...
-                  </div>
-                </div>
+                <AIWavyLoader
+                  isLoading={true}
+                  text="Desenvolvendo a Resposta..."
+                  primaryColor="#3876DF"
+                />
               ) : (
                 <>
                   <div style={{ fontFamily: "'Tahoma', sans-serif", fontSize: 14, color: "#c2c2c2", lineHeight: 1.5 }}>
