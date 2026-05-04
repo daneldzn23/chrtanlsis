@@ -911,6 +911,7 @@ export default function Grafico() {
                 <img src={icFecharContato} alt="close" width={16} height={16} />
               </button>
             </div>
+          </div>
 
           {/* Chat Content */}
           <div style={{
