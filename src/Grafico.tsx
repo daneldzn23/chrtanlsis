@@ -196,6 +196,7 @@ export default function Grafico() {
   const [showTradingTooltip, setShowTradingTooltip] = React.useState(false);
   const [tooltipPos, setTooltipPos] = React.useState({ top: 0, left: 0 });
   const [showProfitAIChat, setShowProfitAIChat] = React.useState(false);
+  const [isProfitAILoading, setIsProfitAILoading] = React.useState(false);
   const [isPanning, setIsPanning] = React.useState(false);
   const allCandlesRef = React.useRef<Candle[]>(generateInitialCandles());
   const chartRef = React.useRef<HTMLDivElement>(null);
@@ -434,6 +435,8 @@ export default function Grafico() {
         <div ref={profitAIBtnRef}>
           <BtnSelect onClick={() => {
             setShowProfitAIChat(true);
+            setIsProfitAILoading(true);
+            setTimeout(() => setIsProfitAILoading(false), 2000);
           }} onMouseEnter={() => {
             if (profitAIBtnRef.current) {
               const rect = profitAIBtnRef.current.getBoundingClientRect();
@@ -466,13 +469,13 @@ export default function Grafico() {
             {/* Title row */}
             <div style={{ display: "flex", gap: 4, alignItems: "center", height: 22, paddingTop: 4 }}>
               <div style={{ flex: 1, fontFamily: "'Segoe UI', sans-serif", fontWeight: 600, fontSize: 12, color: "#fff", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                Selecionar e perguntar ao Profit AI
+                Analisar gráfico com Profit AI
               </div>
               <img src={icProfitAI} alt="" width={16} height={16} style={{ flexShrink: 0 }} />
             </div>
             {/* Description row */}
             <div style={{ fontFamily: "'Tahoma', sans-serif", fontSize: 11, color: "#c2c2c2", lineHeight: "1.5" }}>
-              Selecione uma área no gráfico e pergunte diretamente ao Profit AI por sugestões e tendências.
+              O Profit AI analisa o gráfico completo e fornece sugestões, padrões e tendências de trading em tempo real.
             </div>
           </div>
         )}
@@ -496,7 +499,9 @@ export default function Grafico() {
               position: "relative",
               minWidth: 0,
               display: "flex",
-              cursor: isPanning ? "grabbing" : "grab"
+              cursor: isPanning ? "grabbing" : "grab",
+              backgroundColor: isProfitAILoading ? "rgba(33, 150, 243, 0.08)" : "transparent",
+              transition: "background-color 0.3s ease"
             }}
             onMouseDown={(e) => {
               // Pan mode - always enabled
@@ -613,6 +618,33 @@ export default function Grafico() {
                 });
               })()}
             </div>
+
+            {/* Analysis Indicator Toast */}
+            {isProfitAILoading && (
+              <div style={{
+                position: "absolute",
+                top: 12,
+                left: "50%",
+                transform: "translateX(-50%)",
+                display: "flex",
+                gap: 8,
+                alignItems: "center",
+                background: "rgba(40, 50, 60, 0.9)",
+                border: "1px solid rgba(100, 180, 240, 0.3)",
+                borderRadius: 4,
+                padding: "8px 16px",
+                pointerEvents: "none",
+                zIndex: 10,
+                backdropFilter: "blur(8px)"
+              }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 16, height: 16 }}>
+                  <img src={icProfitAI} alt="analyzing" width={14} height={14} />
+                </div>
+                <span style={{ fontFamily: "'Tahoma', sans-serif", fontSize: 12, color: "#e6e6e6", fontWeight: 500 }}>
+                  Analisando...
+                </span>
+              </div>
+            )}
 
           </div>
 
@@ -850,26 +882,34 @@ export default function Grafico() {
           {/* Header */}
           <div style={{
             display: "flex",
-            gap: 4,
-            height: 22,
-            alignItems: "center",
+            flexDirection: "column",
             padding: "0 4px"
           }}>
-            <div style={{ display: "flex", gap: 3, alignItems: "center" }}>
-              <img src={icProfitAI} alt="Profit AI" width={14} height={14} />
-              <span style={{ fontFamily: "'Segoe UI', sans-serif", fontWeight: 600, fontSize: 13, color: "#fff" }}>Profit AI</span>
+            <div style={{
+              display: "flex",
+              gap: 4,
+              height: 22,
+              alignItems: "center"
+            }}>
+              <div style={{ display: "flex", gap: 3, alignItems: "center" }}>
+                <img src={icProfitAI} alt="Profit AI" width={14} height={14} />
+                <span style={{ fontFamily: "'Segoe UI', sans-serif", fontWeight: 600, fontSize: 13, color: "#fff" }}>Profit AI</span>
+              </div>
+              <div style={{ flex: 1 }} />
+              <button style={{ background: "none", border: "none", cursor: "pointer", display: "flex", gap: 4, alignItems: "center", height: 22, padding: "0 3px", borderRadius: 4, flexShrink: 0 }}>
+                <img src={icNovaMsg} alt="new" width={16} height={16} />
+                <span style={{ fontFamily: "'Tahoma', sans-serif", fontSize: 12, color: "#fff", whiteSpace: "nowrap" }}>Novo Chat</span>
+              </button>
+              <button style={{ background: "none", border: "none", cursor: "pointer", width: 22, height: 22, display: "flex", alignItems: "center", justifyContent: "center", padding: 0, flexShrink: 0 }}>
+                <img src={icMenuContexto} alt="menu" width={16} height={16} />
+              </button>
+              <button onClick={() => setShowProfitAIChat(false)} style={{ background: "none", border: "none", cursor: "pointer", width: 22, height: 22, display: "flex", alignItems: "center", justifyContent: "center", padding: 0, flexShrink: 0 }}>
+                <img src={icFecharContato} alt="close" width={16} height={16} />
+              </button>
             </div>
-            <div style={{ flex: 1 }} />
-            <button style={{ background: "none", border: "none", cursor: "pointer", display: "flex", gap: 4, alignItems: "center", height: 22, padding: "0 3px", borderRadius: 4, flexShrink: 0 }}>
-              <img src={icNovaMsg} alt="new" width={16} height={16} />
-              <span style={{ fontFamily: "'Tahoma', sans-serif", fontSize: 12, color: "#fff", whiteSpace: "nowrap" }}>Novo Chat</span>
-            </button>
-            <button style={{ background: "none", border: "none", cursor: "pointer", width: 22, height: 22, display: "flex", alignItems: "center", justifyContent: "center", padding: 0, flexShrink: 0 }}>
-              <img src={icMenuContexto} alt="menu" width={16} height={16} />
-            </button>
-            <button onClick={() => setShowProfitAIChat(false)} style={{ background: "none", border: "none", cursor: "pointer", width: 22, height: 22, display: "flex", alignItems: "center", justifyContent: "center", padding: 0, flexShrink: 0 }}>
-              <img src={icFecharContato} alt="close" width={16} height={16} />
-            </button>
+            <div style={{ fontFamily: "'Segoe UI', sans-serif", fontSize: 10, color: "#95afc7", paddingTop: 2 }}>
+              Analisando gráfico completo • {zoomLevel} candles visíveis
+            </div>
           </div>
 
           {/* Chat Content */}
@@ -881,7 +921,7 @@ export default function Grafico() {
             flexDirection: "column",
             gap: 12
           }}>
-            {/* User Message */}
+            {/* Analysis Context Message */}
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
               <div style={{
                 background: "rgba(0, 0, 0, 0.2)",
@@ -890,13 +930,17 @@ export default function Grafico() {
                 borderRadius: 8,
                 maxWidth: "85%"
               }}>
-                <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 10 }}>
+                <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 8 }}>
                   <div style={{ width: 24, height: 24, background: "#dbb5e5", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 700, color: "#2d2d2d", flexShrink: 0, fontFamily: "'Segoe UI', sans-serif" }}>DA</div>
                   <span style={{ fontFamily: "'Segoe UI', sans-serif", fontWeight: 600, fontSize: 13, color: "#b6cfe5" }}>Daniel Antunes</span>
                 </div>
-                <p style={{ fontFamily: "'Tahoma', sans-serif", fontSize: 14, color: "#e6e6e6", margin: 0, lineHeight: 1.5 }}>
-                  faça uma análise do gráfico e me de sugestões e tendencias para criar uma estratégia de trading e saber se esse ativo vale a pena
-                </p>
+                <div style={{ fontFamily: "'Tahoma', sans-serif", fontSize: 14, color: "#e6e6e6", lineHeight: 1.6 }}>
+                  <div>Analisa o gráfico de <strong>PETR4</strong></div>
+                  <div style={{ marginTop: 4, fontSize: 13, color: "#c2c2c2" }}>
+                    Período: 24/04/2025 até 30/04/2026<br/>
+                    Timeframe: 1 minuto
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -906,17 +950,27 @@ export default function Grafico() {
                 <img src={icProfitAIChat} alt="Profit AI" width={18} height={18} />
                 <span style={{ fontFamily: "'Segoe UI', sans-serif", fontWeight: 600, fontSize: 13, color: "#8197ab" }}>Profit AI</span>
               </div>
-              <div style={{ fontFamily: "'Tahoma', sans-serif", fontSize: 14, color: "#c2c2c2", lineHeight: 1.5 }}>
-                <p style={{ margin: "0 0 8px 0" }}>O gráfico mostra uma transição clara de um movimento de alta para uma forte reversão vendedora.</p>
-                <p style={{ margin: "0 0 8px 0" }}><strong>Padrão de Reversão:</strong> Após uma subida íngreme, o preço formou um topo e começou a apresentar candles de dúvida.</p>
-                <p style={{ margin: "0 0 8px 0" }}><strong>Tendência Imediata:</strong> De Baixa. O preço está "esticado" para baixo, buscando novas mínimas.</p>
-              </div>
-              <div style={{ display: "flex", gap: 12, paddingTop: 10 }}>
-                <img src={icLike} alt="like" width={18} height={18} style={{ cursor: "pointer" }} />
-                <img src={icDislike} alt="dislike" width={18} height={18} style={{ cursor: "pointer" }} />
-                <div style={{ flex: 1 }} />
-                <span style={{ fontFamily: "'Segoe UI', sans-serif", fontSize: 12, color: "#95afc7" }}>16:07</span>
-              </div>
+              {isProfitAILoading ? (
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", paddingTop: 8, paddingBottom: 8, width: "100%" }}>
+                  <div style={{ fontFamily: "'Tahoma', sans-serif", fontSize: 12, color: "#95afc7" }}>
+                    Desenvolvendo a Resposta...
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div style={{ fontFamily: "'Tahoma', sans-serif", fontSize: 14, color: "#c2c2c2", lineHeight: 1.5 }}>
+                    <p style={{ margin: "0 0 8px 0" }}>O gráfico mostra uma transição clara de um movimento de alta para uma forte reversão vendedora.</p>
+                    <p style={{ margin: "0 0 8px 0" }}><strong>Padrão de Reversão:</strong> Após uma subida íngreme, o preço formou um topo e começou a apresentar candles de dúvida.</p>
+                    <p style={{ margin: "0 0 8px 0" }}><strong>Tendência Imediata:</strong> De Baixa. O preço está "esticado" para baixo, buscando novas mínimas.</p>
+                  </div>
+                  <div style={{ display: "flex", gap: 12, paddingTop: 10 }}>
+                    <img src={icLike} alt="like" width={18} height={18} style={{ cursor: "pointer" }} />
+                    <img src={icDislike} alt="dislike" width={18} height={18} style={{ cursor: "pointer" }} />
+                    <div style={{ flex: 1 }} />
+                    <span style={{ fontFamily: "'Segoe UI', sans-serif", fontSize: 12, color: "#95afc7" }}>16:07</span>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
