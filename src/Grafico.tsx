@@ -436,7 +436,7 @@ export default function Grafico() {
           <BtnSelect onClick={() => {
             setShowProfitAIChat(true);
             setIsProfitAILoading(true);
-            setTimeout(() => setIsProfitAILoading(false), 2000);
+            setTimeout(() => setIsProfitAILoading(false), 3000);
           }} onMouseEnter={() => {
             if (profitAIBtnRef.current) {
               const rect = profitAIBtnRef.current.getBoundingClientRect();
@@ -491,6 +491,10 @@ export default function Grafico() {
       <div style={{ display: "flex", flex: 1, alignItems: "stretch", minHeight: 0, width: "100%" }}>
         {/* Chart area */}
         <div style={{ background: "#042042", flex: 1, position: "relative", minWidth: 0, display: "flex", flexDirection: "column" }}>
+          {/* Profit AI Loading Glow */}
+          {isProfitAILoading && (
+            <div className="profit-ai-glow" style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, zIndex: 5 }} />
+          )}
           {/* Chart */}
           <div
             ref={chartRef}
