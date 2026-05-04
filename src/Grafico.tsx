@@ -918,29 +918,6 @@ export default function Grafico() {
             gap: 12
           }}>
             {/* Analysis Context Message */}
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
-              <div style={{
-                background: "rgba(0, 0, 0, 0.2)",
-                backdropFilter: "blur(25px)",
-                padding: "8px 12px",
-                borderRadius: 8,
-                maxWidth: "85%"
-              }}>
-                <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 8 }}>
-                  <div style={{ width: 24, height: 24, background: "#dbb5e5", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 700, color: "#2d2d2d", flexShrink: 0, fontFamily: "'Segoe UI', sans-serif" }}>DA</div>
-                  <span style={{ fontFamily: "'Segoe UI', sans-serif", fontWeight: 600, fontSize: 13, color: "#b6cfe5" }}>Daniel Antunes</span>
-                </div>
-                <div style={{ fontFamily: "'Tahoma', sans-serif", fontSize: 14, color: "#e6e6e6", lineHeight: 1.6 }}>
-                  <div>Analisa o gráfico de <strong>PETR4</strong></div>
-                  <div style={{ marginTop: 4, fontSize: 13, color: "#c2c2c2" }}>
-                    Período: 24/04/2025 até 30/04/2026<br/>
-                    Timeframe: 1 minuto
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* AI Response */}
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
                 <img src={icProfitAIChat} alt="Profit AI" width={18} height={18} />
