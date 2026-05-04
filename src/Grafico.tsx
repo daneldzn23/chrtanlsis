@@ -907,9 +907,6 @@ export default function Grafico() {
                 <img src={icFecharContato} alt="close" width={16} height={16} />
               </button>
             </div>
-            <div style={{ fontFamily: "'Segoe UI', sans-serif", fontSize: 10, color: "#95afc7", paddingTop: 2 }}>
-              Analisando gráfico completo • {zoomLevel} candles visíveis
-            </div>
           </div>
 
           {/* Chat Content */}
@@ -921,7 +918,7 @@ export default function Grafico() {
             flexDirection: "column",
             gap: 12
           }}>
-            {/* Analysis Context Message */}
+            {/* User Message */}
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
               <div style={{
                 background: "rgba(0, 0, 0, 0.2)",
