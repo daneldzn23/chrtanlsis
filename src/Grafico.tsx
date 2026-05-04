@@ -911,7 +911,6 @@ export default function Grafico() {
                 <img src={icFecharContato} alt="close" width={16} height={16} />
               </button>
             </div>
-          </div>
 
           {/* Chat Content */}
           <div style={{
@@ -922,7 +921,7 @@ export default function Grafico() {
             flexDirection: "column",
             gap: 12
           }}>
-            {/* User Message */}
+            {/* Analysis Context Message */}
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
               <div style={{
                 background: "rgba(0, 0, 0, 0.2)",
