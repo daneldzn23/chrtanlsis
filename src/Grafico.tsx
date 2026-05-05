@@ -624,30 +624,23 @@ export default function Grafico() {
               })()}
             </div>
 
-            {/* Analysis Indicator Toast */}
+            {/* Analysis Toast with Wave Loader */}
             {isProfitAILoading && (
               <div style={{
                 position: "absolute",
-                top: 12,
+                bottom: 12,
                 left: "50%",
                 transform: "translateX(-50%)",
-                display: "flex",
-                gap: 8,
-                alignItems: "center",
-                background: "rgba(40, 50, 60, 0.9)",
-                border: "1px solid rgba(100, 180, 240, 0.3)",
-                borderRadius: 4,
-                padding: "8px 16px",
+                width: 320,
                 pointerEvents: "none",
                 zIndex: 10,
-                backdropFilter: "blur(8px)"
+                boxSizing: "border-box"
               }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 16, height: 16 }}>
-                  <img src={icProfitAI} alt="analyzing" width={14} height={14} />
-                </div>
-                <span style={{ fontFamily: "'Tahoma', sans-serif", fontSize: 12, color: "#e6e6e6", fontWeight: 500 }}>
-                  Analisando...
-                </span>
+                <AIWavyLoader
+                  isLoading={true}
+                  text="Analisando o Gráfico..."
+                  primaryColor="#3876DF"
+                />
               </div>
             )}
 
