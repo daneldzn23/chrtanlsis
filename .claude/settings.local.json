@@ -36,7 +36,9 @@
       "Bash(grep -n \"Analisando o Gráfico\\\\|compact={true}\\\\|bottom:\" /tmp/AIWavyLoader.jsx 2>/dev/null || echo \"Not in temp file, checking history...\")",
       "Read(//tmp/**)",
       "Bash(rm -rf static/*)",
-      "Bash(cp -r build/static/* static/)"
+      "Bash(cp -r build/static/* static/)",
+      "Bash(ls -la \"c:\\\\Users\\\\dantunes\\\\Documents\\\\ai-chart-analysis\\\\\" | head -20)",
+      "Read(//c/Users/dantunes/Documents/**)"
     ]
   }
 }

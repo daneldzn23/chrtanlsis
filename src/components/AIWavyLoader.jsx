@@ -33,13 +33,13 @@ const AIWavyLoader = ({
 
       // Define unique wave patterns for each line
       const linePatterns = [
-        { freq1: 0.022, freq2: 0.045, amp1: 9, amp2: 5, speed1: 1.0, speed2: 1.8, phase: 0 },
-        { freq1: 0.028, freq2: 0.014, amp1: 11, amp2: 7, speed1: 1.3, speed2: 0.8, phase: Math.PI / 7 },
-        { freq1: 0.018, freq2: 0.036, amp1: 8, amp2: 6, speed1: 0.9, speed2: 1.5, phase: (2 * Math.PI) / 7 },
-        { freq1: 0.032, freq2: 0.016, amp1: 10, amp2: 8, speed1: 1.2, speed2: 0.6, phase: (3 * Math.PI) / 7 },
-        { freq1: 0.020, freq2: 0.041, amp1: 12, amp2: 4, speed1: 1.1, speed2: 1.9, phase: (4 * Math.PI) / 7 },
-        { freq1: 0.026, freq2: 0.013, amp1: 7, amp2: 9, speed1: 1.4, speed2: 0.7, phase: (5 * Math.PI) / 7 },
-        { freq1: 0.024, freq2: 0.048, amp1: 10, amp2: 6, speed1: 0.8, speed2: 1.6, phase: (6 * Math.PI) / 7 },
+        { freq1: 0.022, freq2: 0.045, amp1: 5, amp2: 3, speed1: 0.6, speed2: 1.2, phase: 0 },
+        { freq1: 0.028, freq2: 0.014, amp1: 6, amp2: 4, speed1: 1.8, speed2: 0.3, phase: Math.PI / 7 },
+        { freq1: 0.018, freq2: 0.036, amp1: 4, amp2: 3, speed1: 0.4, speed2: 2.1, phase: (2 * Math.PI) / 7 },
+        { freq1: 0.032, freq2: 0.016, amp1: 5, amp2: 4, speed1: 2.2, speed2: 0.2, phase: (3 * Math.PI) / 7 },
+        { freq1: 0.020, freq2: 0.041, amp1: 6, amp2: 2, speed1: 0.5, speed2: 2.5, phase: (4 * Math.PI) / 7 },
+        { freq1: 0.026, freq2: 0.013, amp1: 4, amp2: 5, speed1: 1.9, speed2: 0.1, phase: (5 * Math.PI) / 7 },
+        { freq1: 0.024, freq2: 0.048, amp1: 5, amp2: 3, speed1: 0.3, speed2: 2.3, phase: (6 * Math.PI) / 7 },
       ];
 
       // Draw multiple lines all starting from the same centerline
@@ -105,22 +105,22 @@ const AIWavyLoader = ({
   if (!isLoading) return null;
 
   return (
-    <div 
+    <div
       className={`ai-wavy-loader ${containerClassName}`}
       style={{
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: '16px',
-        padding: '24px'
+        gap: '4px',
+        padding: 0
       }}
     >
       {text && (
         <p
           style={{
             margin: 0,
-            fontSize: '13px',
+            fontSize: '12px',
             color: 'rgba(180, 180, 180, 0.8)',
             fontWeight: '400',
             letterSpacing: '0.3px',
@@ -132,15 +132,14 @@ const AIWavyLoader = ({
           {text}
         </p>
       )}
-      
+
       <div
         style={{
           width: '100%',
-          maxWidth: '500px',
-          height: '60px',
+          height: '50px',
           position: 'relative',
           borderRadius: '0px',
-          overflow: 'hidden',
+          overflow: 'visible',
           background: 'transparent',
           border: 'none'
         }}

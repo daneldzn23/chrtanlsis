@@ -2,6 +2,7 @@
 
 import React from 'react';
 import AIWavyLoader from './components/AIWavyLoader';
+import { calculateRSI, calculateMACD, calculateATR, calculateADX } from './utils/indicators';
 import icStatusMercadoDisponivel from './ic-status_mercado-disponível.svg';
 import icChartTrading from './ic-chart_trading.svg';
 import icConfiguracaoComJanela from './ic-configuração_com_janela.svg';
@@ -47,6 +48,9 @@ import icLike from './ic-like.svg';
 import icDislike from './ic-like-1.svg';
 import icNovaMsg from './ic-ai-nova_mensagem.svg';
 import icProfitAIChat from './Icones Agentes AI validados 16px.svg';
+import icProfitAIGrafico from './ic-Profit_AI-grafico.svg';
+import icBovespa from './ic-Bovespa.svg';
+import icStatusMercado from './ic_pack-status_de_mercado.svg';
 
 // ─── Shared inline style helpers ─────────────────────────────────────────────
 
@@ -86,7 +90,7 @@ function IcGrafico() { return <Icon16 src={icGrafico} />; }
 
 // ─── Toolbar button helper ────────────────────────────────────────────────────
 
-function BtnSelect({ children, active, onClick, onMouseEnter, onMouseLeave }: { children: React.ReactNode; active?: boolean; onClick?: () => void; onMouseEnter?: () => void; onMouseLeave?: () => void }) {
+function BtnSelect({ children, active, onClick, onMouseEnter, onMouseLeave, disabled }: { children: React.ReactNode; active?: boolean; onClick?: () => void; onMouseEnter?: () => void; onMouseLeave?: () => void; disabled?: boolean }) {
   const [hovered, setHovered] = React.useState(false);
   return (
     <div
@@ -113,8 +117,10 @@ function BtnSelect({ children, active, onClick, onMouseEnter, onMouseLeave }: { 
         border: active || hovered ? "1px solid rgba(119,119,119,0.2)" : "1px solid transparent",
         background: active || hovered ? "rgba(102,102,102,0.5)" : "transparent",
         boxSizing: "border-box",
-        cursor: "pointer",
-      }}
+        cursor: disabled ? "not-allowed" : "pointer",
+        opacity: disabled ? 0.5 : 1,
+        pointerEvents: disabled ? "none" : "auto",
+      } as React.CSSProperties}
     >
       {children}
     </div>
@@ -199,6 +205,8 @@ export default function Grafico() {
   const [showProfitAIChat, setShowProfitAIChat] = React.useState(false);
   const [isProfitAILoading, setIsProfitAILoading] = React.useState(false);
   const [isPanning, setIsPanning] = React.useState(false);
+  const [showIndicators, setShowIndicators] = React.useState(false);
+  const [analysisComplete, setAnalysisComplete] = React.useState(false);
   const allCandlesRef = React.useRef<Candle[]>(generateInitialCandles());
   const chartRef = React.useRef<HTMLDivElement>(null);
   const profitAIBtnRef = React.useRef<HTMLDivElement>(null);
@@ -398,7 +406,7 @@ export default function Grafico() {
 
         <div style={{ background: "#505050", height: 16, flexShrink: 0, width: 1 }} />
 
-        <BtnSelect>
+        <BtnSelect active={showIndicators} onClick={() => analysisComplete && setShowIndicators(!showIndicators)} disabled={!analysisComplete}>
           <IcIndicadores />
           <p style={{ ...fontTahoma, color: "#fff", whiteSpace: "nowrap", lineHeight: "16px" }}>Indicadores</p>
         </BtnSelect>
@@ -437,7 +445,12 @@ export default function Grafico() {
           <BtnSelect onClick={() => {
             setShowProfitAIChat(true);
             setIsProfitAILoading(true);
-            setTimeout(() => setIsProfitAILoading(false), 3000);
+            setAnalysisComplete(false);
+            setTimeout(() => {
+              setIsProfitAILoading(false);
+              setAnalysisComplete(true);
+              setShowIndicators(true);
+            }, 3000);
           }} onMouseEnter={() => {
             if (profitAIBtnRef.current) {
               const rect = profitAIBtnRef.current.getBoundingClientRect();
@@ -496,6 +509,58 @@ export default function Grafico() {
           {isProfitAILoading && (
             <div className="profit-ai-glow" style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, zIndex: 5 }} />
           )}
+
+          {/* Graph Header */}
+          <div style={{ display: "flex", alignItems: "center", gap: 4, height: 24, paddingLeft: 8, paddingRight: 8, background: "transparent", borderBottom: "1px solid #505050", flexShrink: 0 }}>
+            {/* Asset Icon - Same as header */}
+            <img src={icPetr} alt="PETR" width={16} height={16} style={{ display: "block", borderRadius: 2, flexShrink: 0 }} />
+            {/* Asset Name */}
+            <p style={{ ...fontSegoe, fontWeight: 600, fontSize: 12, color: "#fff", margin: 0, textTransform: "uppercase", whiteSpace: "nowrap" }}>PETR4</p>
+            {/* Timeframe */}
+            <p style={{ ...fontSegoe, fontWeight: 600, fontSize: 12, color: "#fff", margin: 0, whiteSpace: "nowrap" }}>15Min</p>
+            {/* Bovespa Icon */}
+            <img src={icBovespa} alt="Bovespa" width={16} height={16} style={{ display: "block", flexShrink: 0 }} />
+            {/* Market Status Icon */}
+            <img src={icStatusMercado} alt="Status" width={16} height={16} style={{ display: "block", flexShrink: 0 }} />
+            {/* Data Display */}
+            <div style={{ display: "flex", alignItems: "center", gap: 2, ...fontSegoe, fontWeight: 600, fontSize: 12 }}>
+              <span style={{ color: "#999" }}>(</span>
+              <div style={{ display: "flex", gap: 2, alignItems: "center", paddingRight: 4 }}>
+                <span style={{ color: "#fff" }}>Abr</span>
+                <span style={{ color: "#999" }}>31,16</span>
+              </div>
+              <div style={{ display: "flex", gap: 2, alignItems: "center", paddingRight: 4 }}>
+                <span style={{ color: "#fff" }}>Máx</span>
+                <span style={{ color: "#999" }}>31,16</span>
+              </div>
+              <div style={{ display: "flex", gap: 2, alignItems: "center", paddingRight: 4 }}>
+                <span style={{ color: "#fff" }}>Mín</span>
+                <span style={{ color: "#999" }}>31,16</span>
+              </div>
+              <div style={{ display: "flex", gap: 2, alignItems: "center", paddingRight: 4 }}>
+                <span style={{ color: "#fff" }}>Fch</span>
+                <span style={{ color: "#999" }}>31,16</span>
+              </div>
+              <div style={{ display: "flex", gap: 2, alignItems: "center" }}>
+                <span style={{ color: "#fff" }}>V</span>
+                <span style={{ color: "#999" }}>0,00%</span>
+              </div>
+              <span style={{ color: "#999" }}>)</span>
+              {/* ATR Values - only show when indicators are on */}
+              {showIndicators && analysisComplete && (
+                <>
+                  <span style={{ color: "#fff", marginLeft: 8, ...fontSegoe, fontWeight: 600, fontSize: 12 }}>ATR</span>
+                  <div style={{ background: "#e56824", padding: "1px 4px", borderRadius: 4 }}>
+                    <p style={{ ...fontSegoe, fontWeight: 600, fontSize: 11, color: "#000", margin: 0, textAlign: "center" }}>49,62</p>
+                  </div>
+                  <div style={{ background: "#e56824", padding: "1px 4px", borderRadius: 4 }}>
+                    <p style={{ ...fontSegoe, fontWeight: 600, fontSize: 11, color: "#000", margin: 0, textAlign: "center" }}>48,88</p>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+
           {/* Chart */}
           <div
             ref={chartRef}
@@ -563,6 +628,26 @@ export default function Grafico() {
 
                 const baseTime = new Date(2026, 4, 29, 10, 13);
 
+                // Calculate indicators for all candles (for offset mapping)
+                const allRSI = calculateRSI(allCandlesRef.current);
+                const allMACD = calculateMACD(allCandlesRef.current);
+                const allATR = calculateATR(allCandlesRef.current);
+                const allADX = calculateADX(allCandlesRef.current);
+
+                // Get visible indices in the full candle array
+                const allLength = allCandlesRef.current.length;
+                const visibleStart = Math.max(0, allLength - viewOffset - zoomLevel);
+
+                // Extract visible indicator values
+                const visibleRSI = allRSI.slice(visibleStart, visibleStart + visibleCandles.length);
+                const visibleMACD = {
+                  macdLine: allMACD.macdLine.slice(visibleStart, visibleStart + visibleCandles.length),
+                  signalLine: allMACD.signalLine.slice(visibleStart, visibleStart + visibleCandles.length),
+                  histogram: allMACD.histogram.slice(visibleStart, visibleStart + visibleCandles.length),
+                };
+                const visibleATR = allATR.slice(visibleStart, visibleStart + visibleCandles.length);
+                const visibleADX = allADX.slice(visibleStart, visibleStart + visibleCandles.length);
+
                 return (
                   <>
                     {/* Horizontal grid lines */}
@@ -597,6 +682,64 @@ export default function Grafico() {
                         </g>
                       );
                     })}
+
+                    {/* Overlay Indicators */}
+                    {showIndicators && analysisComplete && (
+                      <>
+                        {/* RSI Line - follows between 30-70 range */}
+                        {visibleRSI.length > 1 && (
+                          <polyline
+                            points={visibleRSI
+                              .map((rsi, i) => {
+                                const x = i * (candleWidth + gap) + candleWidth / 2;
+                                const y = 60 + (rsi - 50) * 2.4;
+                                return `${x},${y}`;
+                              })
+                              .join(" ")}
+                            fill="none"
+                            stroke="#FF8C42"
+                            strokeWidth="0.8"
+                            opacity="0.7"
+                          />
+                        )}
+
+                        {/* ATR Line - shows volatility as envelope around price */}
+                        {visibleATR.length > 1 && (
+                          <>
+                            <polyline
+                              points={visibleATR
+                                .map((atr, i) => {
+                                  const x = i * (candleWidth + gap) + candleWidth / 2;
+                                  const y = yScale(visibleCandles[i].close - atr * 0.5);
+                                  return `${x},${y}`;
+                                })
+                                .join(" ")}
+                              fill="none"
+                              stroke="#FF8C42"
+                              strokeWidth="0.6"
+                              opacity="0.5"
+                              strokeDasharray="1,1"
+                            />
+                            <polyline
+                              points={visibleATR
+                                .map((atr, i) => {
+                                  const x = i * (candleWidth + gap) + candleWidth / 2;
+                                  const y = yScale(visibleCandles[i].close + atr * 0.5);
+                                  return `${x},${y}`;
+                                })
+                                .join(" ")}
+                              fill="none"
+                              stroke="#FF8C42"
+                              strokeWidth="0.6"
+                              opacity="0.5"
+                              strokeDasharray="1,1"
+                            />
+                          </>
+                        )}
+
+                      </>
+                    )}
+
                   </>
                 );
               })()}
@@ -624,6 +767,8 @@ export default function Grafico() {
               })()}
             </div>
 
+
+
             {/* Analysis Toast with Wave Loader */}
             {isProfitAILoading && (
               <div style={{
@@ -631,14 +776,14 @@ export default function Grafico() {
                 bottom: 12,
                 left: "50%",
                 transform: "translateX(-50%)",
-                width: 320,
+                width: 360,
                 pointerEvents: "none",
                 zIndex: 10,
                 boxSizing: "border-box",
                 background: "rgba(16, 24, 32, 0.85)",
                 border: "1px solid rgba(56, 118, 223, 0.3)",
                 borderRadius: 8,
-                padding: "12px 16px",
+                padding: "8px 12px 4px 12px",
                 backdropFilter: "blur(12px)"
               }}>
                 <AIWavyLoader
@@ -651,21 +796,183 @@ export default function Grafico() {
 
           </div>
 
-          {/* Time axis labels below chart */}
-          <div style={{ display: "flex", justifyContent: "space-between", paddingLeft: 0, paddingRight: 63, paddingTop: 4, paddingBottom: 4, height: 20, position: "relative" }}>
-            {(() => {
-              const baseTime = new Date(2026, 4, 29, 10, 13);
-              return Array.from({ length: 8 }).map((_, i) => {
-                const time = new Date(baseTime.getTime() + i * 10 * 60000);
-                const timeStr = time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-                return (
-                  <div key={`time-label-${i}`} style={{ color: "#fff", fontSize: 10, fontFamily: "'Tahoma', sans-serif", whiteSpace: "nowrap", textAlign: "center", flex: 1 }}>
-                    {timeStr}
+          {/* Indicators Panels */}
+          {showIndicators && analysisComplete && (
+            <div style={{ display: "flex", flexDirection: "column", gap: 0, height: "45%", background: "#042042", borderTop: "1px solid #505050", overflow: "hidden" }}>
+              {/* RSI Panel */}
+              <div style={{ flex: 1, position: "relative", display: "flex", flexDirection: "column", borderBottom: "1px solid #505050", minHeight: 0 }}>
+                {/* Header */}
+                <div style={{ display: "flex", alignItems: "center", gap: 4, height: 24, paddingLeft: 8, paddingRight: 8, background: "transparent", borderBottom: "1px solid #505050", flexShrink: 0 }}>
+                  <p style={{ ...fontSegoe, fontWeight: 600, fontSize: 12, color: "#fff", margin: 0, textTransform: "uppercase" }}>IFR (RSI)</p>
+                  <p style={{ ...fontSegoe, fontWeight: 600, fontSize: 12, color: "#fff", margin: 0 }}>[9]</p>
+                  <div style={{ background: "#e56824", padding: "1px 4px", borderRadius: 4 }}>
+                    <p style={{ ...fontSegoe, fontWeight: 600, fontSize: 11, color: "#000", margin: 0, textAlign: "center" }}>47,80</p>
                   </div>
-                );
-              });
-            })()}
-          </div>
+                </div>
+                {/* Chart */}
+                <svg style={{ flex: 1 }} viewBox="0 0 800 56" preserveAspectRatio="none">
+                  {(() => {
+                    const allLength = allCandlesRef.current.length;
+                    const visibleStart = Math.max(0, allLength - viewOffset - zoomLevel);
+                    const visibleRSI = calculateRSI(allCandlesRef.current).slice(visibleStart, visibleStart + zoomLevel);
+                    const candleWidth = 800 / visibleCandles.length * 0.7;
+                    const gap = 800 / visibleCandles.length * 0.3;
+
+                    return (
+                      <>
+                        <line x1="0" y1="12" x2="800" y2="12" stroke="#203857" strokeWidth="0.5" />
+                        <line x1="0" y1="28" x2="800" y2="28" stroke="#203857" strokeWidth="0.5" />
+                        <line x1="0" y1="44" x2="800" y2="44" stroke="#203857" strokeWidth="0.5" />
+                        {visibleRSI.length > 1 && (
+                          <polyline
+                            points={visibleRSI
+                              .map((rsi, i) => {
+                                const x = i * (candleWidth + gap) + candleWidth / 2;
+                                const y = 56 * (1 - rsi / 100);
+                                return `${x},${y}`;
+                              })
+                              .join(" ")}
+                            fill="none"
+                            stroke="#FF8C42"
+                            strokeWidth="0.8"
+                          />
+                        )}
+                      </>
+                    );
+                  })()}
+                </svg>
+              </div>
+
+              {/* MACD Panel */}
+              <div style={{ flex: 1, position: "relative", display: "flex", flexDirection: "column", borderBottom: "1px solid #505050", minHeight: 0 }}>
+                {/* Header */}
+                <div style={{ display: "flex", alignItems: "center", gap: 4, height: 24, paddingLeft: 8, paddingRight: 8, background: "transparent", borderBottom: "1px solid #505050", flexShrink: 0 }}>
+                  <p style={{ ...fontSegoe, fontWeight: 600, fontSize: 12, color: "#fff", margin: 0, textTransform: "uppercase" }}>MACD Linha (26.12)</p>
+                  <div style={{ background: "#e56824", padding: "1px 4px", borderRadius: 4 }}>
+                    <p style={{ ...fontSegoe, fontWeight: 600, fontSize: 11, color: "#000", margin: 0, textAlign: "center" }}>36,56</p>
+                  </div>
+                  <p style={{ ...fontSegoe, fontWeight: 600, fontSize: 12, color: "#fff", margin: 0 }}>Média Móvel A [200]</p>
+                  <div style={{ background: "#52ea94", padding: "1px 4px", borderRadius: 4 }}>
+                    <p style={{ ...fontSegoe, fontWeight: 600, fontSize: 11, color: "#000", margin: 0, textAlign: "center" }}>0.08</p>
+                  </div>
+                </div>
+                {/* Chart */}
+                <svg style={{ flex: 1 }} viewBox="0 0 800 56" preserveAspectRatio="none">
+                  {(() => {
+                    const allLength = allCandlesRef.current.length;
+                    const visibleStart = Math.max(0, allLength - viewOffset - zoomLevel);
+                    const allMACD = calculateMACD(allCandlesRef.current);
+                    const visibleMACD = {
+                      macdLine: allMACD.macdLine.slice(visibleStart, visibleStart + zoomLevel),
+                      signalLine: allMACD.signalLine.slice(visibleStart, visibleStart + zoomLevel),
+                    };
+                    const candleWidth = 800 / visibleCandles.length * 0.7;
+                    const gap = 800 / visibleCandles.length * 0.3;
+                    const macdRange = Math.max(...visibleMACD.macdLine.map(Math.abs), ...visibleMACD.signalLine.map(Math.abs)) || 0.01;
+
+                    return (
+                      <>
+                        <line x1="0" y1="28" x2="800" y2="28" stroke="#203857" strokeWidth="0.5" />
+                        {visibleMACD.macdLine.length > 1 && (
+                          <polyline
+                            points={visibleMACD.macdLine
+                              .map((macd, i) => {
+                                const x = i * (candleWidth + gap) + candleWidth / 2;
+                                const y = 28 - (macd / macdRange) * 24;
+                                return `${x},${y}`;
+                              })
+                              .join(" ")}
+                            fill="none"
+                            stroke="#FF8C42"
+                            strokeWidth="0.8"
+                          />
+                        )}
+                        {visibleMACD.signalLine.length > 1 && (
+                          <polyline
+                            points={visibleMACD.signalLine
+                              .map((signal, i) => {
+                                const x = i * (candleWidth + gap) + candleWidth / 2;
+                                const y = 28 - (signal / macdRange) * 24;
+                                return `${x},${y}`;
+                              })
+                              .join(" ")}
+                            fill="none"
+                            stroke="#FF8C42"
+                            strokeWidth="0.8"
+                            strokeDasharray="2,2"
+                          />
+                        )}
+                      </>
+                    );
+                  })()}
+                </svg>
+              </div>
+
+              {/* ADX Panel */}
+              <div style={{ flex: 1, position: "relative", display: "flex", flexDirection: "column", minHeight: 0 }}>
+                {/* Header */}
+                <div style={{ display: "flex", alignItems: "center", gap: 4, height: 24, paddingLeft: 8, paddingRight: 8, background: "transparent", borderBottom: "1px solid #505050", flexShrink: 0 }}>
+                  <p style={{ ...fontSegoe, fontWeight: 600, fontSize: 12, color: "#fff", margin: 0, textTransform: "uppercase" }}>ADX</p>
+                  <p style={{ ...fontSegoe, fontWeight: 600, fontSize: 12, color: "#fff", margin: 0 }}>[9,9]</p>
+                  <div style={{ background: "#e56824", padding: "1px 4px", borderRadius: 4 }}>
+                    <p style={{ ...fontSegoe, fontWeight: 600, fontSize: 11, color: "#000", margin: 0, textAlign: "center" }}>36,56</p>
+                  </div>
+                </div>
+                {/* Chart */}
+                <svg style={{ flex: 1 }} viewBox="0 0 800 56" preserveAspectRatio="none">
+                  {(() => {
+                    const allLength = allCandlesRef.current.length;
+                    const visibleStart = Math.max(0, allLength - viewOffset - zoomLevel);
+                    const allADX = calculateADX(allCandlesRef.current);
+                    const visibleADX = allADX.slice(visibleStart, visibleStart + zoomLevel);
+                    const candleWidth = 800 / visibleCandles.length * 0.7;
+                    const gap = 800 / visibleCandles.length * 0.3;
+
+                    return (
+                      <>
+                        <line x1="0" y1="12" x2="800" y2="12" stroke="#203857" strokeWidth="0.5" />
+                        <line x1="0" y1="28" x2="800" y2="28" stroke="#203857" strokeWidth="0.5" />
+                        <line x1="0" y1="44" x2="800" y2="44" stroke="#203857" strokeWidth="0.5" />
+                        {visibleADX.length > 1 && (
+                          <polyline
+                            points={visibleADX
+                              .map((adx, i) => {
+                                const x = i * (candleWidth + gap) + candleWidth / 2;
+                                const y = 56 - (adx / 100) * 56;
+                                return `${x},${y}`;
+                              })
+                              .join(" ")}
+                            fill="none"
+                            stroke="#FF8C42"
+                            strokeWidth="0.8"
+                          />
+                        )}
+                      </>
+                    );
+                  })()}
+                </svg>
+              </div>
+            </div>
+          )}
+
+          {/* Time axis labels below chart */}
+          {!(showIndicators && analysisComplete) && (
+            <div style={{ display: "flex", justifyContent: "space-between", paddingLeft: 0, paddingRight: 63, paddingTop: 4, paddingBottom: 4, height: 20, position: "relative" }}>
+              {(() => {
+                const baseTime = new Date(2026, 4, 29, 10, 13);
+                return Array.from({ length: 8 }).map((_, i) => {
+                  const time = new Date(baseTime.getTime() + i * 10 * 60000);
+                  const timeStr = time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                  return (
+                    <div key={`time-label-${i}`} style={{ color: "#fff", fontSize: 10, fontFamily: "'Tahoma', sans-serif", whiteSpace: "nowrap", textAlign: "center", flex: 1 }}>
+                      {timeStr}
+                    </div>
+                  );
+                });
+              })()}
+            </div>
+          )}
+
 
           {/* ── Date and Layouts footer ── */}
           <div style={{ display: "flex", height: 24, alignItems: "center", borderTop: "1px solid #505050", background: "#333", overflow: "hidden" }}>
@@ -913,7 +1220,7 @@ export default function Grafico() {
           </div>
 
           {/* Chat Content */}
-          <div style={{
+          <div className="chat-scroll" style={{
             flex: 1,
             overflowY: "auto",
             padding: "12px 16px",
@@ -944,102 +1251,108 @@ export default function Grafico() {
               </div>
             </div>
 
-            {/* AI Response */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {!isProfitAILoading && (
+              <>
               <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                <img src={icProfitAIChat} alt="Profit AI" width={18} height={18} />
+                <img src={icProfitAIGrafico} alt="Profit AI" width={18} height={18} />
                 <span style={{ fontFamily: "'Segoe UI', sans-serif", fontWeight: 600, fontSize: 13, color: "#8197ab" }}>Profit AI</span>
               </div>
-              {isProfitAILoading ? (
-                <AIWavyLoader
-                  isLoading={true}
-                  text="Desenvolvendo a Resposta..."
-                  primaryColor="#3876DF"
-                />
-              ) : (
-                <>
-                  <div style={{ fontFamily: "'Tahoma', sans-serif", fontSize: 13, color: "#c2c2c2", lineHeight: 1.6, overflowY: "auto", maxHeight: "400px", paddingRight: "8px" }}>
-                    {/* 1. Resumo Executivo */}
-                    <div style={{ marginBottom: 16 }}>
-                      <h3 style={{ margin: "0 0 8px 0", fontSize: 14, fontWeight: 600, color: "#e6e6e6" }}>1. Resumo Executivo</h3>
-                      <p style={{ margin: "0 0 4px 0" }}>PETR4 apresenta uma estrutura de mercado lateralizada no timeframe de 15 minutos, com retorno positivo de 2,19% no período analisado. O ativo negociou entre R$ 46,12 e R$ 49,57, demonstrando volatilidade moderada. Recentemente, um cruzamento de média móvel dourado ocorreu em 27 de abril, sinalizando um possível fortalecimento da pressão compradora. O RSI encontra-se em zona neutra (51,54) após uma queda significativa de 66,57 há 5 períodos, sugerindo redução de momentum. O MACD apresenta sinal bullish com cruzamento positivo recente.</p>
-                    </div>
+              <div style={{ fontFamily: "'Tahoma', sans-serif", fontSize: 13, color: "#c2c2c2", lineHeight: 1.6 }}>
+                {/* 1. Resumo Executivo */}
+                <div style={{ marginBottom: 16 }}>
+                  <h3 style={{ margin: "0 0 8px 0", fontSize: 14, fontWeight: 600, color: "#e6e6e6" }}>1. Resumo Executivo</h3>
+                  <p style={{ margin: "0 0 4px 0" }}>PETR4 apresenta uma estrutura de mercado lateralizada no timeframe de 15 minutos, com retorno positivo de 2,19% no período analisado. O ativo negociou entre R$ 46,12 e R$ 49,57, demonstrando volatilidade moderada. Recentemente, um cruzamento de média móvel dourado ocorreu em 27 de abril, sinalizando um possível fortalecimento da pressão compradora. O RSI encontra-se em zona neutra (51,54) após uma queda significativa de 66,57 há 5 períodos, sugerindo redução de momentum. O MACD apresenta sinal bullish com cruzamento positivo recente.</p>
+                </div>
 
-                    {/* 2. Análise de Tendência */}
-                    <div style={{ marginBottom: 16 }}>
-                      <h3 style={{ margin: "0 0 8px 0", fontSize: 14, fontWeight: 600, color: "#e6e6e6" }}>2. Análise de Tendência</h3>
-                      <p style={{ margin: "0 0 8px 0" }}>A tendência classificada como <strong>sideways</strong> no timeframe de 15 minutos é confirmada pelo índice ADX de 18,63, indicando uma tendência fraca sem direcionamento claro. O período de análise de abril de 2026 apresenta oscilações recorrentes sem estabelecer uma direção dominante sustentável.</p>
-                      <ul style={{ margin: "0 0 8px 0", paddingLeft: 16 }}>
-                        <li style={{ margin: "4px 0" }}>Movimento inicial (01-06 de abril): queda de R$ 47,90 para R$ 47,29, seguida de recuperação até R$ 48,94</li>
-                        <li style={{ margin: "4px 0" }}>Fase intermediária (07-17 de abril): volatilidade extrema com queda acentuada até R$ 46,12 e recuperação parcial</li>
-                        <li style={{ margin: "4px 0" }}>Fase recente (24-30 de abril): tentativa de escalada com novo cruzamento de médias móveis em movimento ascendente</li>
-                      </ul>
-                      <p style={{ margin: "0" }}>No timeframe de 30 minutos observa-se uma tendência classificada como <strong>up</strong> com ADX de 20,6, sugerindo um fortalecimento relativo da pressão compradora em horizontes mais longos.</p>
-                    </div>
+                {/* 2. Análise de Tendência */}
+                <div style={{ marginBottom: 16 }}>
+                  <h3 style={{ margin: "0 0 8px 0", fontSize: 14, fontWeight: 600, color: "#e6e6e6" }}>2. Análise de Tendência</h3>
+                  <p style={{ margin: "0 0 8px 0" }}>A tendência classificada como <strong>sideways</strong> no timeframe de 15 minutos é confirmada pelo índice ADX de 18,63, indicando uma tendência fraca sem direcionamento claro. O período de análise de abril de 2026 apresenta oscilações recorrentes sem estabelecer uma direção dominante sustentável.</p>
+                  <ul style={{ margin: "0 0 8px 0", paddingLeft: 16 }}>
+                    <li style={{ margin: "4px 0" }}>Movimento inicial (01-06 de abril): queda de R$ 47,90 para R$ 47,29, seguida de recuperação até R$ 48,94</li>
+                    <li style={{ margin: "4px 0" }}>Fase intermediária (07-17 de abril): volatilidade extrema com queda acentuada até R$ 46,12 e recuperação parcial</li>
+                    <li style={{ margin: "4px 0" }}>Fase recente (24-30 de abril): tentativa de escalada com novo cruzamento de médias móveis em movimento ascendente</li>
+                  </ul>
+                  <p style={{ margin: "0" }}>No timeframe de 30 minutos observa-se uma tendência classificada como <strong>up</strong> com ADX de 20,6, sugerindo um fortalecimento relativo da pressão compradora em horizontes mais longos.</p>
+                </div>
 
-                    {/* 3. Avaliação de Volatilidade */}
-                    <div style={{ marginBottom: 16 }}>
-                      <h3 style={{ margin: "0 0 8px 0", fontSize: 14, fontWeight: 600, color: "#e6e6e6" }}>3. Avaliação de Volatilidade</h3>
-                      <p style={{ margin: "0 0 8px 0" }}>A volatilidade do ativo, medida pelo ATR (Average True Range), situa-se em 0,17 no timeframe de 15 minutos, classificada como moderada. O volume atual (R$ 5.212.445,00) está 37% acima da média histórica no mesmo horário (R$ 3.793.738,50), indicando interesse aumentado de mercado.</p>
-                    </div>
+                {/* 3. Avaliação de Volatilidade */}
+                <div style={{ marginBottom: 16 }}>
+                  <h3 style={{ margin: "0 0 8px 0", fontSize: 14, fontWeight: 600, color: "#e6e6e6" }}>3. Avaliação de Volatilidade</h3>
+                  <p style={{ margin: "0 0 8px 0" }}>A volatilidade do ativo, medida pelo ATR (Average True Range), situa-se em 0,17 no timeframe de 15 minutos, classificada como moderada. O volume atual (R$ 5.212.445,00) está 37% acima da média histórica no mesmo horário (R$ 3.793.738,50), indicando interesse aumentado de mercado.</p>
+                </div>
 
-                    {/* 4. Análise de Indicadores */}
-                    <div style={{ marginBottom: 16 }}>
-                      <h3 style={{ margin: "0 0 8px 0", fontSize: 14, fontWeight: 600, color: "#e6e6e6" }}>4. Análise de Indicadores</h3>
-                      <p style={{ margin: "0 0 8px 0" }}><strong>RSI (Índice de Força Relativa)</strong><br/>O RSI atual de 51,54 posiciona-se na zona neutra. O indicador registrou uma queda de 15,03 pontos nos últimos 5 períodos (de 66,57 para 51,54), sugerindo uma perda significativa de momentum positivo.</p>
-                      <p style={{ margin: "0 0 8px 0" }}><strong>MACD (Média Móvel de Convergência/Divergência)</strong><br/>O MACD apresenta um sinal bullish com cruzamento positivo recente: Valor MACD: 0,0868 | Sinal: 0,0789 | Histograma: 0,0079 (positivo)</p>
-                    </div>
+                {/* 4. Análise de Indicadores */}
+                <div style={{ marginBottom: 16 }}>
+                  <h3 style={{ margin: "0 0 8px 0", fontSize: 14, fontWeight: 600, color: "#e6e6e6" }}>4. Análise de Indicadores</h3>
+                  <p style={{ margin: "0 0 8px 0" }}><strong>RSI (Índice de Força Relativa)</strong><br/>O RSI atual de 51,54 posiciona-se na zona neutra. O indicador registrou uma queda de 15,03 pontos nos últimos 5 períodos (de 66,57 para 51,54), sugerindo uma perda significativa de momentum positivo.</p>
+                  <p style={{ margin: "0 0 8px 0" }}><strong>MACD (Média Móvel de Convergência/Divergência)</strong><br/>O MACD apresenta um sinal bullish com cruzamento positivo recente: Valor MACD: 0,0868 | Sinal: 0,0789 | Histograma: 0,0079 (positivo)</p>
+                </div>
 
-                    {/* 5. Médias Móveis */}
-                    <div style={{ marginBottom: 16 }}>
-                      <h3 style={{ margin: "0 0 8px 0", fontSize: 14, fontWeight: 600, color: "#e6e6e6" }}>5. Médias Móveis e Cruzamentos</h3>
-                      <p style={{ margin: "0 0 8px 0" }}>SMA 50: 48,87 | SMA 200: 47,83 | Diferença: +1,04</p>
-                      <p style={{ margin: "0 0 8px 0" }}>Três cruzamentos significativos foram registrados:</p>
-                      <ul style={{ margin: "0 0 8px 0", paddingLeft: 16 }}>
-                        <li style={{ margin: "4px 0" }}>Cruzamento Dourado (24 de abril): SMA 50 cruzou acima da SMA 200</li>
-                        <li style={{ margin: "4px 0" }}>Cruzamento da Morte (27 de abril): reversão rápida com SMA 50 cruzando abaixo da SMA 200</li>
-                        <li style={{ margin: "4px 0" }}>Novo Cruzamento Dourado (27 de abril): reafirmação do sinal bullish</li>
-                      </ul>
-                    </div>
+                {/* 5. Médias Móveis */}
+                <div style={{ marginBottom: 16 }}>
+                  <h3 style={{ margin: "0 0 8px 0", fontSize: 14, fontWeight: 600, color: "#e6e6e6" }}>5. Médias Móveis e Cruzamentos</h3>
+                  <p style={{ margin: "0 0 8px 0" }}>SMA 50: 48,87 | SMA 200: 47,83 | Diferença: +1,04</p>
+                  <p style={{ margin: "0 0 8px 0" }}>Três cruzamentos significativos foram registrados:</p>
+                  <ul style={{ margin: "0 0 8px 0", paddingLeft: 16 }}>
+                    <li style={{ margin: "4px 0" }}>Cruzamento Dourado (24 de abril): SMA 50 cruzou acima da SMA 200</li>
+                    <li style={{ margin: "4px 0" }}>Cruzamento da Morte (27 de abril): reversão rápida com SMA 50 cruzando abaixo da SMA 200</li>
+                    <li style={{ margin: "4px 0" }}>Novo Cruzamento Dourado (27 de abril): reafirmação do sinal bullish</li>
+                  </ul>
+                </div>
 
-                    {/* 6. Níveis de Suporte e Resistência */}
-                    <div style={{ marginBottom: 16 }}>
-                      <h3 style={{ margin: "0 0 8px 0", fontSize: 14, fontWeight: 600, color: "#e6e6e6" }}>6. Níveis de Suporte e Resistência</h3>
-                      <p style={{ margin: "0 0 8px 0" }}><strong>Suportes:</strong> S1: R$ 48,69 | S2: R$ 48,49 | S3: R$ 49,42</p>
-                      <p style={{ margin: "0 0 8px 0" }}><strong>Resistências:</strong> R1: R$ 48,79 | R2: R$ 48,38 | R3: R$ 48,04</p>
-                      <p style={{ margin: "0" }}>O preço atual (R$ 48,95) encontra-se próximo à resistência R1 (R$ 48,79), representando uma zona crítica.</p>
-                    </div>
+                {/* 6. Níveis de Suporte e Resistência */}
+                <div style={{ marginBottom: 16 }}>
+                  <h3 style={{ margin: "0 0 8px 0", fontSize: 14, fontWeight: 600, color: "#e6e6e6" }}>6. Níveis de Suporte e Resistência</h3>
+                  <p style={{ margin: "0 0 8px 0" }}><strong>Suportes:</strong> S1: R$ 48,69 | S2: R$ 48,49 | S3: R$ 49,42</p>
+                  <p style={{ margin: "0 0 8px 0" }}><strong>Resistências:</strong> R1: R$ 48,79 | R2: R$ 48,38 | R3: R$ 48,04</p>
+                  <p style={{ margin: "0" }}>O preço atual (R$ 48,95) encontra-se próximo à resistência R1 (R$ 48,79), representando uma zona crítica.</p>
+                </div>
 
-                    {/* 7. Padrões de Velas */}
-                    <div style={{ marginBottom: 16 }}>
-                      <h3 style={{ margin: "0 0 8px 0", fontSize: 14, fontWeight: 600, color: "#e6e6e6" }}>7. Padrões de Velas</h3>
-                      <p style={{ margin: "0 0 8px 0" }}>No timeframe de 15 minutos, foram identificados:</p>
-                      <ul style={{ margin: "0 0 8px 0", paddingLeft: 16 }}>
-                        <li style={{ margin: "4px 0" }}>Martelo Invertido (candle atual): Formação bullish com sombra superior longa e corpo pequeno</li>
-                        <li style={{ margin: "4px 0" }}>Doji (8 candles atrás): Formação neutra com sinalizador bullish</li>
-                        <li style={{ margin: "4px 0" }}>Padrão de Absorção Forte Touro: Padrão com sinal bullish fraco</li>
-                      </ul>
-                    </div>
+                {/* 7. Padrões de Velas */}
+                <div style={{ marginBottom: 16 }}>
+                  <h3 style={{ margin: "0 0 8px 0", fontSize: 14, fontWeight: 600, color: "#e6e6e6" }}>7. Padrões de Velas</h3>
+                  <p style={{ margin: "0 0 8px 0" }}>No timeframe de 15 minutos, foram identificados:</p>
+                  <ul style={{ margin: "0 0 8px 0", paddingLeft: 16 }}>
+                    <li style={{ margin: "4px 0" }}>Martelo Invertido (candle atual): Formação bullish com sombra superior longa e corpo pequeno</li>
+                    <li style={{ margin: "4px 0" }}>Doji (8 candles atrás): Formação neutra com sinalizador bullish</li>
+                    <li style={{ margin: "4px 0" }}>Padrão de Absorção Forte Touro: Padrão com sinal bullish fraco</li>
+                  </ul>
+                </div>
 
-                    {/* 8. Conclusão */}
-                    <div style={{ marginBottom: 12 }}>
-                      <h3 style={{ margin: "0 0 8px 0", fontSize: 14, fontWeight: 600, color: "#e6e6e6" }}>8. Conclusão</h3>
-                      <p style={{ margin: "0 0 8px 0" }}>PETR4 apresenta um quadro técnico ambíguo e em transição no timeframe de 15 minutos.</p>
-                      <p style={{ margin: "0 0 8px 0" }}><strong>Fatores Altistas:</strong> Cruzamento dourado das médias móveis mantido desde 27 de abril, múltiplos níveis de resistência convertidos em suporte, MACD em sinal bullish, volume elevado.</p>
-                      <p style={{ margin: "0 0 8px 0" }}><strong>Fatores Bearish:</strong> Perda significativa de momentum (RSI), divergência no timeframe de 5 minutos, histograma do MACD em arrefecimento.</p>
-                      <p style={{ margin: "0" }}>A consolidação dependerá da capacidade de manter suporte acima destes níveis e renovar momentum nos próximos candles.</p>
-                    </div>
+                {/* 8. Conclusão */}
+                <div style={{ marginBottom: 12 }}>
+                  <h3 style={{ margin: "0 0 8px 0", fontSize: 14, fontWeight: 600, color: "#e6e6e6" }}>8. Conclusão</h3>
+                  <p style={{ margin: "0 0 8px 0" }}>PETR4 apresenta um quadro técnico ambíguo e em transição no timeframe de 15 minutos.</p>
+                  <p style={{ margin: "0 0 8px 0" }}><strong>Fatores Altistas:</strong> Cruzamento dourado das médias móveis mantido desde 27 de abril, múltiplos níveis de resistência convertidos em suporte, MACD em sinal bullish, volume elevado.</p>
+                  <p style={{ margin: "0 0 8px 0" }}><strong>Fatores Bearish:</strong> Perda significativa de momentum (RSI), divergência no timeframe de 5 minutos, histograma do MACD em arrefecimento.</p>
+                  <p style={{ margin: "0" }}>A consolidação dependerá da capacidade de manter suporte acima destes níveis e renovar momentum nos próximos candles.</p>
+                </div>
+              </div>
+
+              <div style={{ display: "flex", gap: 12, paddingTop: 10 }}>
+                <img src={icLike} alt="like" width={18} height={18} style={{ cursor: "pointer" }} />
+                <img src={icDislike} alt="dislike" width={18} height={18} style={{ cursor: "pointer" }} />
+                <div style={{ flex: 1 }} />
+                <span style={{ fontFamily: "'Segoe UI', sans-serif", fontSize: 12, color: "#95afc7" }}>16:07</span>
+              </div>
+              </>
+            )}
+
+            {isProfitAILoading && (
+              <>
+                <div style={{ flex: 1 }} />
+                <div style={{ display: "flex", justifyContent: "center", alignItems: "flex-end", width: "100%" }}>
+                  <div style={{ width: "100%", maxWidth: "500px" }}>
+                    <AIWavyLoader
+                      isLoading={true}
+                      text="Desenvolvendo a Resposta..."
+                      primaryColor="#3876DF"
+                    />
                   </div>
-
-                  <div style={{ display: "flex", gap: 12, paddingTop: 10 }}>
-                    <img src={icLike} alt="like" width={18} height={18} style={{ cursor: "pointer" }} />
-                    <img src={icDislike} alt="dislike" width={18} height={18} style={{ cursor: "pointer" }} />
-                    <div style={{ flex: 1 }} />
-                    <span style={{ fontFamily: "'Segoe UI', sans-serif", fontSize: 12, color: "#95afc7" }}>16:07</span>
-                  </div>
-                </>
-              )}
-            </div>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Input */}

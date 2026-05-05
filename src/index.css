@@ -96,3 +96,26 @@ html, body {
   background: rgba(100, 140, 180, 0.8);
 }
 
+/* Chat scroll styling */
+.chat-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 140, 180, 0.6) transparent;
+}
+
+.chat-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-scroll::-webkit-scrollbar-thumb {
+  background: rgba(100, 140, 180, 0.6);
+  border-radius: 3px;
+}
+
+.chat-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 140, 180, 0.8);
+}
+
