@@ -572,7 +572,7 @@ export default function Grafico() {
             </div>
             {/* Description row */}
             <div style={{ fontFamily: "'Tahoma', sans-serif", fontSize: 11, color: "#c2c2c2", lineHeight: "1.5" }}>
-              O Profit AI analisa o gráfico completo e fornece sugestões, padrões e tendências de trading em tempo real.
+              O Profit AI analisará o gráfico no período exibido (data inicial e data final) e retornará indicadores e sugestões de tendências.
             </div>
           </div>
         )}
