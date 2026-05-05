@@ -28,7 +28,9 @@
       "PowerShell(Get-Content \"$env:APPDATA\\\\Claude\\\\config.json\" -ErrorAction SilentlyContinue | ConvertFrom-Json | ConvertTo-Json -Depth 10)",
       "Bash(git pull *)",
       "Bash(rm -rf static/* asset-manifest.json index.html)",
-      "Bash(cp -r build/* .)"
+      "Bash(cp -r build/* .)",
+      "Bash(grep \"main\\\\\\\\..*\\\\\\\\.js$\")",
+      "Bash(rm -rf static/* asset-manifest.json index.html favicon.ico logo* manifest.json robots.txt)"
     ]
   }
 }

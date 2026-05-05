@@ -960,7 +960,7 @@ export default function Grafico() {
                 />
               ) : (
                 <>
-                  <div style={{ fontFamily: "'Tahoma', sans-serif", fontSize: 13, color: "#c2c2c2", lineHeight: 1.6 }}>
+                  <div style={{ fontFamily: "'Tahoma', sans-serif", fontSize: 13, color: "#c2c2c2", lineHeight: 1.6, overflowY: "auto", maxHeight: "400px", paddingRight: "8px" }}>
                     {/* 1. Resumo Executivo */}
                     <div style={{ marginBottom: 16 }}>
                       <h3 style={{ margin: "0 0 8px 0", fontSize: 14, fontWeight: 600, color: "#e6e6e6" }}>1. Resumo Executivo</h3>
