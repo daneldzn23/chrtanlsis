@@ -125,6 +125,7 @@ const AIWavyLoader = ({
             fontWeight: '400',
             letterSpacing: '0.3px',
             textAlign: 'center',
+            fontFamily: 'Tahoma, sans-serif',
             opacity: 0.8
           }}
         >
