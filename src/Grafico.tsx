@@ -634,7 +634,12 @@ export default function Grafico() {
                 width: 320,
                 pointerEvents: "none",
                 zIndex: 10,
-                boxSizing: "border-box"
+                boxSizing: "border-box",
+                background: "rgba(16, 24, 32, 0.85)",
+                border: "1px solid rgba(56, 118, 223, 0.3)",
+                borderRadius: 8,
+                padding: "12px 16px",
+                backdropFilter: "blur(12px)"
               }}>
                 <AIWavyLoader
                   isLoading={true}
