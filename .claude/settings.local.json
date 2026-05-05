@@ -30,7 +30,13 @@
       "Bash(rm -rf static/* asset-manifest.json index.html)",
       "Bash(cp -r build/* .)",
       "Bash(grep \"main\\\\\\\\..*\\\\\\\\.js$\")",
-      "Bash(rm -rf static/* asset-manifest.json index.html favicon.ico logo* manifest.json robots.txt)"
+      "Bash(rm -rf static/* asset-manifest.json index.html favicon.ico logo* manifest.json robots.txt)",
+      "Bash(git show *)",
+      "Bash(cp /tmp/AIWavyLoader.jsx src/components/AIWavyLoader.jsx)",
+      "Bash(grep -n \"Analisando o Gráfico\\\\|compact={true}\\\\|bottom:\" /tmp/AIWavyLoader.jsx 2>/dev/null || echo \"Not in temp file, checking history...\")",
+      "Read(//tmp/**)",
+      "Bash(rm -rf static/*)",
+      "Bash(cp -r build/static/* static/)"
     ]
   }
 }
