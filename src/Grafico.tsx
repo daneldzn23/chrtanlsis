@@ -1331,10 +1331,10 @@ export default function Grafico() {
                   <span style={{ fontFamily: "'Segoe UI', sans-serif", fontWeight: 600, fontSize: 13, color: "#b6cfe5" }}>Daniel Antunes</span>
                 </div>
                 <div style={{ fontFamily: "'Tahoma', sans-serif", fontSize: 14, color: "#e6e6e6", lineHeight: 1.6 }}>
-                  <div>Analisa o gráfico de <strong>PETR4</strong></div>
+                  <div>Analise o gráfico de <strong>PETR4</strong></div>
                   <div style={{ marginTop: 4, fontSize: 13, color: "#c2c2c2" }}>
                     Período: 24/04/2025 até 30/04/2026<br/>
-                    Timeframe: 1 minuto
+                    Timeframe: 15 minutos
                   </div>
                 </div>
               </div>
