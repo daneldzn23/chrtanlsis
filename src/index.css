@@ -50,3 +50,49 @@ html, body {
   pointer-events: none;
 }
 
+/* Custom scrollbar for chat */
+.profit-ai-chat-enter > div > div:nth-child(2) {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 140, 180, 0.6) transparent;
+}
+
+.profit-ai-chat-enter > div > div:nth-child(2)::-webkit-scrollbar {
+  width: 6px;
+}
+
+.profit-ai-chat-enter > div > div:nth-child(2)::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.profit-ai-chat-enter > div > div:nth-child(2)::-webkit-scrollbar-thumb {
+  background: rgba(100, 140, 180, 0.6);
+  border-radius: 3px;
+}
+
+.profit-ai-chat-enter > div > div:nth-child(2)::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 140, 180, 0.8);
+}
+
+/* Custom scrollbar for analysis content */
+.profit-ai-chat-enter > div > div:nth-child(2) > div:nth-child(2) > div:last-child > div:not(:first-child) > div {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 140, 180, 0.6) transparent;
+}
+
+.profit-ai-chat-enter > div > div:nth-child(2) > div:nth-child(2) > div:last-child > div:not(:first-child) > div::-webkit-scrollbar {
+  width: 6px;
+}
+
+.profit-ai-chat-enter > div > div:nth-child(2) > div:nth-child(2) > div:last-child > div:not(:first-child) > div::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.profit-ai-chat-enter > div > div:nth-child(2) > div:nth-child(2) > div:last-child > div:not(:first-child) > div::-webkit-scrollbar-thumb {
+  background: rgba(100, 140, 180, 0.6);
+  border-radius: 3px;
+}
+
+.profit-ai-chat-enter > div > div:nth-child(2) > div:nth-child(2) > div:last-child > div:not(:first-child) > div::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 140, 180, 0.8);
+}
+

@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/chrtanlsis/static/css/main.efb3bde9.css",
-    "main.js": "/chrtanlsis/static/js/main.e9da3cb5.js",
+    "main.css": "/chrtanlsis/static/css/main.30f97ca5.css",
+    "main.js": "/chrtanlsis/static/js/main.be62e0bf.js",
     "static/js/453.624d8589.chunk.js": "/chrtanlsis/static/js/453.624d8589.chunk.js",
     "static/media/Captura de tela 2026-04-29 093551.png": "/chrtanlsis/static/media/Captura de tela 2026-04-29 093551.cd798a1f740c9e4152e7.png",
     "static/media/ic-configuração_com_janela.svg": "/chrtanlsis/static/media/ic-configuração_com_janela.03f7674eb05ecc87ee2f0d9e27163244.svg",
@@ -49,12 +49,12 @@
     "static/media/ic-pressão.svg": "/chrtanlsis/static/media/ic-pressão.a0b85e676392f028e70d6f03cc20c7f1.svg",
     "static/media/ic-minimizar-mini.svg": "/chrtanlsis/static/media/ic-minimizar-mini.e7f9708bea11f29ad049bb6b0f9b3c1e.svg",
     "static/media/ic-maximizar-mini.svg": "/chrtanlsis/static/media/ic-maximizar-mini.a460a224e61158a72edec406a2c0e69a.svg",
-    "main.efb3bde9.css.map": "/chrtanlsis/static/css/main.efb3bde9.css.map",
-    "main.e9da3cb5.js.map": "/chrtanlsis/static/js/main.e9da3cb5.js.map",
+    "main.30f97ca5.css.map": "/chrtanlsis/static/css/main.30f97ca5.css.map",
+    "main.be62e0bf.js.map": "/chrtanlsis/static/js/main.be62e0bf.js.map",
     "453.624d8589.chunk.js.map": "/chrtanlsis/static/js/453.624d8589.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.efb3bde9.css",
-    "static/js/main.e9da3cb5.js"
+    "static/css/main.30f97ca5.css",
+    "static/js/main.be62e0bf.js"
   ]
 }
