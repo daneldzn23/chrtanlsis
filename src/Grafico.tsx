@@ -1333,7 +1333,7 @@ export default function Grafico() {
                 <div style={{ fontFamily: "'Tahoma', sans-serif", fontSize: 14, color: "#e6e6e6", lineHeight: 1.6 }}>
                   <div>Analise o gráfico de <strong>PETR4</strong></div>
                   <div style={{ marginTop: 4, fontSize: 13, color: "#c2c2c2" }}>
-                    Período: 24/04/2025 até 30/04/2026<br/>
+                    Período: 05/05/2026 10:13:00 até 05/05/2026 11:23:00<br/>
                     Timeframe: 15 minutos
                   </div>
                 </div>
