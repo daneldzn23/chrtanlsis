@@ -631,17 +631,9 @@ export default function Grafico() {
                 bottom: 12,
                 left: "50%",
                 transform: "translateX(-50%)",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                background: "rgba(16, 24, 32, 0.85)",
-                border: "1px solid rgba(56, 118, 223, 0.3)",
-                borderRadius: 8,
-                padding: "12px 16px",
+                width: 320,
                 pointerEvents: "none",
                 zIndex: 10,
-                backdropFilter: "blur(12px)",
-                width: 320,
                 boxSizing: "border-box"
               }}>
                 <AIWavyLoader
