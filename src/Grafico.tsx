@@ -960,11 +960,79 @@ export default function Grafico() {
                 />
               ) : (
                 <>
-                  <div style={{ fontFamily: "'Tahoma', sans-serif", fontSize: 14, color: "#c2c2c2", lineHeight: 1.5 }}>
-                    <p style={{ margin: "0 0 8px 0" }}>O gráfico mostra uma transição clara de um movimento de alta para uma forte reversão vendedora.</p>
-                    <p style={{ margin: "0 0 8px 0" }}><strong>Padrão de Reversão:</strong> Após uma subida íngreme, o preço formou um topo e começou a apresentar candles de dúvida.</p>
-                    <p style={{ margin: "0 0 8px 0" }}><strong>Tendência Imediata:</strong> De Baixa. O preço está "esticado" para baixo, buscando novas mínimas.</p>
+                  <div style={{ fontFamily: "'Tahoma', sans-serif", fontSize: 13, color: "#c2c2c2", lineHeight: 1.6 }}>
+                    {/* 1. Resumo Executivo */}
+                    <div style={{ marginBottom: 16 }}>
+                      <h3 style={{ margin: "0 0 8px 0", fontSize: 14, fontWeight: 600, color: "#e6e6e6" }}>1. Resumo Executivo</h3>
+                      <p style={{ margin: "0 0 4px 0" }}>PETR4 apresenta uma estrutura de mercado lateralizada no timeframe de 15 minutos, com retorno positivo de 2,19% no período analisado. O ativo negociou entre R$ 46,12 e R$ 49,57, demonstrando volatilidade moderada. Recentemente, um cruzamento de média móvel dourado ocorreu em 27 de abril, sinalizando um possível fortalecimento da pressão compradora. O RSI encontra-se em zona neutra (51,54) após uma queda significativa de 66,57 há 5 períodos, sugerindo redução de momentum. O MACD apresenta sinal bullish com cruzamento positivo recente.</p>
+                    </div>
+
+                    {/* 2. Análise de Tendência */}
+                    <div style={{ marginBottom: 16 }}>
+                      <h3 style={{ margin: "0 0 8px 0", fontSize: 14, fontWeight: 600, color: "#e6e6e6" }}>2. Análise de Tendência</h3>
+                      <p style={{ margin: "0 0 8px 0" }}>A tendência classificada como <strong>sideways</strong> no timeframe de 15 minutos é confirmada pelo índice ADX de 18,63, indicando uma tendência fraca sem direcionamento claro. O período de análise de abril de 2026 apresenta oscilações recorrentes sem estabelecer uma direção dominante sustentável.</p>
+                      <ul style={{ margin: "0 0 8px 0", paddingLeft: 16 }}>
+                        <li style={{ margin: "4px 0" }}>Movimento inicial (01-06 de abril): queda de R$ 47,90 para R$ 47,29, seguida de recuperação até R$ 48,94</li>
+                        <li style={{ margin: "4px 0" }}>Fase intermediária (07-17 de abril): volatilidade extrema com queda acentuada até R$ 46,12 e recuperação parcial</li>
+                        <li style={{ margin: "4px 0" }}>Fase recente (24-30 de abril): tentativa de escalada com novo cruzamento de médias móveis em movimento ascendente</li>
+                      </ul>
+                      <p style={{ margin: "0" }}>No timeframe de 30 minutos observa-se uma tendência classificada como <strong>up</strong> com ADX de 20,6, sugerindo um fortalecimento relativo da pressão compradora em horizontes mais longos.</p>
+                    </div>
+
+                    {/* 3. Avaliação de Volatilidade */}
+                    <div style={{ marginBottom: 16 }}>
+                      <h3 style={{ margin: "0 0 8px 0", fontSize: 14, fontWeight: 600, color: "#e6e6e6" }}>3. Avaliação de Volatilidade</h3>
+                      <p style={{ margin: "0 0 8px 0" }}>A volatilidade do ativo, medida pelo ATR (Average True Range), situa-se em 0,17 no timeframe de 15 minutos, classificada como moderada. O volume atual (R$ 5.212.445,00) está 37% acima da média histórica no mesmo horário (R$ 3.793.738,50), indicando interesse aumentado de mercado.</p>
+                    </div>
+
+                    {/* 4. Análise de Indicadores */}
+                    <div style={{ marginBottom: 16 }}>
+                      <h3 style={{ margin: "0 0 8px 0", fontSize: 14, fontWeight: 600, color: "#e6e6e6" }}>4. Análise de Indicadores</h3>
+                      <p style={{ margin: "0 0 8px 0" }}><strong>RSI (Índice de Força Relativa)</strong><br/>O RSI atual de 51,54 posiciona-se na zona neutra. O indicador registrou uma queda de 15,03 pontos nos últimos 5 períodos (de 66,57 para 51,54), sugerindo uma perda significativa de momentum positivo.</p>
+                      <p style={{ margin: "0 0 8px 0" }}><strong>MACD (Média Móvel de Convergência/Divergência)</strong><br/>O MACD apresenta um sinal bullish com cruzamento positivo recente: Valor MACD: 0,0868 | Sinal: 0,0789 | Histograma: 0,0079 (positivo)</p>
+                    </div>
+
+                    {/* 5. Médias Móveis */}
+                    <div style={{ marginBottom: 16 }}>
+                      <h3 style={{ margin: "0 0 8px 0", fontSize: 14, fontWeight: 600, color: "#e6e6e6" }}>5. Médias Móveis e Cruzamentos</h3>
+                      <p style={{ margin: "0 0 8px 0" }}>SMA 50: 48,87 | SMA 200: 47,83 | Diferença: +1,04</p>
+                      <p style={{ margin: "0 0 8px 0" }}>Três cruzamentos significativos foram registrados:</p>
+                      <ul style={{ margin: "0 0 8px 0", paddingLeft: 16 }}>
+                        <li style={{ margin: "4px 0" }}>Cruzamento Dourado (24 de abril): SMA 50 cruzou acima da SMA 200</li>
+                        <li style={{ margin: "4px 0" }}>Cruzamento da Morte (27 de abril): reversão rápida com SMA 50 cruzando abaixo da SMA 200</li>
+                        <li style={{ margin: "4px 0" }}>Novo Cruzamento Dourado (27 de abril): reafirmação do sinal bullish</li>
+                      </ul>
+                    </div>
+
+                    {/* 6. Níveis de Suporte e Resistência */}
+                    <div style={{ marginBottom: 16 }}>
+                      <h3 style={{ margin: "0 0 8px 0", fontSize: 14, fontWeight: 600, color: "#e6e6e6" }}>6. Níveis de Suporte e Resistência</h3>
+                      <p style={{ margin: "0 0 8px 0" }}><strong>Suportes:</strong> S1: R$ 48,69 | S2: R$ 48,49 | S3: R$ 49,42</p>
+                      <p style={{ margin: "0 0 8px 0" }}><strong>Resistências:</strong> R1: R$ 48,79 | R2: R$ 48,38 | R3: R$ 48,04</p>
+                      <p style={{ margin: "0" }}>O preço atual (R$ 48,95) encontra-se próximo à resistência R1 (R$ 48,79), representando uma zona crítica.</p>
+                    </div>
+
+                    {/* 7. Padrões de Velas */}
+                    <div style={{ marginBottom: 16 }}>
+                      <h3 style={{ margin: "0 0 8px 0", fontSize: 14, fontWeight: 600, color: "#e6e6e6" }}>7. Padrões de Velas</h3>
+                      <p style={{ margin: "0 0 8px 0" }}>No timeframe de 15 minutos, foram identificados:</p>
+                      <ul style={{ margin: "0 0 8px 0", paddingLeft: 16 }}>
+                        <li style={{ margin: "4px 0" }}>Martelo Invertido (candle atual): Formação bullish com sombra superior longa e corpo pequeno</li>
+                        <li style={{ margin: "4px 0" }}>Doji (8 candles atrás): Formação neutra com sinalizador bullish</li>
+                        <li style={{ margin: "4px 0" }}>Padrão de Absorção Forte Touro: Padrão com sinal bullish fraco</li>
+                      </ul>
+                    </div>
+
+                    {/* 8. Conclusão */}
+                    <div style={{ marginBottom: 12 }}>
+                      <h3 style={{ margin: "0 0 8px 0", fontSize: 14, fontWeight: 600, color: "#e6e6e6" }}>8. Conclusão</h3>
+                      <p style={{ margin: "0 0 8px 0" }}>PETR4 apresenta um quadro técnico ambíguo e em transição no timeframe de 15 minutos.</p>
+                      <p style={{ margin: "0 0 8px 0" }}><strong>Fatores Altistas:</strong> Cruzamento dourado das médias móveis mantido desde 27 de abril, múltiplos níveis de resistência convertidos em suporte, MACD em sinal bullish, volume elevado.</p>
+                      <p style={{ margin: "0 0 8px 0" }}><strong>Fatores Bearish:</strong> Perda significativa de momentum (RSI), divergência no timeframe de 5 minutos, histograma do MACD em arrefecimento.</p>
+                      <p style={{ margin: "0" }}>A consolidação dependerá da capacidade de manter suporte acima destes níveis e renovar momentum nos próximos candles.</p>
+                    </div>
                   </div>
+
                   <div style={{ display: "flex", gap: 12, paddingTop: 10 }}>
                     <img src={icLike} alt="like" width={18} height={18} style={{ cursor: "pointer" }} />
                     <img src={icDislike} alt="dislike" width={18} height={18} style={{ cursor: "pointer" }} />
