@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/chrtanlsis/static/css/main.3d317adb.css",
-    "main.js": "/chrtanlsis/static/js/main.f1d20ec8.js",
+    "main.js": "/chrtanlsis/static/js/main.c274f891.js",
     "static/js/453.624d8589.chunk.js": "/chrtanlsis/static/js/453.624d8589.chunk.js",
     "static/media/Captura de tela 2026-04-29 093551.png": "/chrtanlsis/static/media/Captura de tela 2026-04-29 093551.cd798a1f740c9e4152e7.png",
     "static/media/ic-configuração_com_janela.svg": "/chrtanlsis/static/media/ic-configuração_com_janela.03f7674eb05ecc87ee2f0d9e27163244.svg",
@@ -55,11 +55,11 @@
     "static/media/ic-chevron_line-baixo.svg": "/chrtanlsis/static/media/ic-chevron_line-baixo.da1e687db9922a8d5b76b16bf79c62bf.svg",
     "static/media/ic-maximizar-mini.svg": "/chrtanlsis/static/media/ic-maximizar-mini.a460a224e61158a72edec406a2c0e69a.svg",
     "main.3d317adb.css.map": "/chrtanlsis/static/css/main.3d317adb.css.map",
-    "main.f1d20ec8.js.map": "/chrtanlsis/static/js/main.f1d20ec8.js.map",
+    "main.c274f891.js.map": "/chrtanlsis/static/js/main.c274f891.js.map",
     "453.624d8589.chunk.js.map": "/chrtanlsis/static/js/453.624d8589.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.3d317adb.css",
-    "static/js/main.f1d20ec8.js"
+    "static/js/main.c274f891.js"
   ]
 }
