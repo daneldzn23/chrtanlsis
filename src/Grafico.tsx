@@ -42,6 +42,7 @@ import icFechar from './ic-fechar.svg';
 import icChevronDuploMini from './ic-chevron_duplo_invertido_mini-vertical.svg';
 import icMaisAdicao from './ic-matematica_adicao.svg';
 import icProfitAI from './ic-Profit_AI-mensagem_rapida.svg';
+import icProfitAIIcon from './ic-Profit_AI.svg';
 import icSendDark from './ic-send_dark.svg';
 import icFecharContato from './ic-fechar_contato.svg';
 import icLike from './ic-like.svg';
@@ -568,7 +569,7 @@ export default function Grafico() {
               <div style={{ flex: 1, fontFamily: "'Segoe UI', sans-serif", fontWeight: 600, fontSize: 12, color: "#fff", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 Analisar gráfico com Profit AI
               </div>
-              <img src={icProfitAI} alt="" width={16} height={16} style={{ flexShrink: 0 }} />
+              <img src={icProfitAIIcon} alt="" width={16} height={16} style={{ flexShrink: 0 }} />
             </div>
             {/* Description row */}
             <div style={{ fontFamily: "'Tahoma', sans-serif", fontSize: 11, color: "#c2c2c2", lineHeight: "1.5" }}>
